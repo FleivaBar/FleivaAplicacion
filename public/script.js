@@ -32,8 +32,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // 3. ORDERING APP LOGIC
-    const urlParams = new URLSearchParams(window.location.search);
-    const tableId = urlParams.get('table');
+    // 3. ORDERING APP LOGIC
+    const parts = window.location.pathname.split('/');
+    // Como pediste, asumimos que la estructura es dominio.com/mesa/ID
+    // parts[0] es vacío, parts[1] es 'mesa', parts[2] es el ID
+    const tableId = (parts.length > 2 && parts[1] === 'mesa') ? parts[2] : null;
 
     if (tableId) {
         console.log(`Modo Pedido Activado: Mesa ${tableId}`);
@@ -67,7 +70,7 @@ let currentTableId;
 
 function initOrderingSystem(tableId) {
     currentTableId = tableId;
-    socket = io();
+    socket = io('https://fleiva-aplicacion.onrender.com');
 
     socket.emit('join_table', tableId);
 
