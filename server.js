@@ -11,7 +11,7 @@ const path = require('path');
 const productsBase = require('./public/products.js');
 
 // Servir archivos estáticos desde la carpeta public
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 
 // Página principal (menú)
