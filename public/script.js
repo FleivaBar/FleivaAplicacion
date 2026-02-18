@@ -245,7 +245,20 @@ function changeQty(index, delta) {
 }
 
 function submitOrder() {
+    console.log('Intentando enviar pedido...', cart);
+
     if (cart.length === 0) return alert('El carrito está vacío');
+
+    if (!socket) {
+        alert('Error: No hay conexión con el servidor. Recarga la página.');
+        return;
+    }
+
+    // Verificar si hay una mesa asignada
+    if (!currentTableId) {
+        alert('Error: No se ha detectado el número de mesa. Escanea el código QR nuevamente.');
+        return;
+    }
 
     if (confirm('¿Confirmar pedido?')) {
         const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
@@ -255,6 +268,7 @@ function submitOrder() {
             items: cart,
             total: total
         });
+        console.log('Pedido enviado al servidor');
     }
 }
 
