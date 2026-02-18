@@ -32,11 +32,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // 3. ORDERING APP LOGIC
-    // 3. ORDERING APP LOGIC
+    // Detectar mesa: soporta /mesa/1 (QR) y ?table=X (manual desde admin)
     const parts = window.location.pathname.split('/');
-    // Como pediste, asumimos que la estructura es dominio.com/mesa/ID
-    // parts[0] es vacío, parts[1] es 'mesa', parts[2] es el ID
-    const tableId = (parts.length > 2 && parts[1] === 'mesa') ? parts[2] : null;
+    const urlParams = new URLSearchParams(window.location.search);
+
+    let tableId = null;
+    if (parts.length > 2 && parts[1] === 'mesa') {
+        // Ruta tipo: /mesa/1
+        tableId = decodeURIComponent(parts[2]);
+    } else if (urlParams.has('table')) {
+        // Query param tipo: ?table=Andrea
+        tableId = urlParams.get('table');
+    }
 
     if (tableId) {
         console.log(`Modo Pedido Activado: Mesa ${tableId}`);
