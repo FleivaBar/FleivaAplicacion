@@ -70,7 +70,7 @@ let currentTableId;
 
 function initOrderingSystem(tableId) {
     currentTableId = tableId;
-    socket = io('https://fleiva-aplicacion.onrender.com');
+    socket = io();
 
     socket.emit('join_table', tableId);
 

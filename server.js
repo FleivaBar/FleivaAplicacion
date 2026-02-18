@@ -106,6 +106,9 @@ io.on('connection', (socket) => {
         console.log(`Usuario unido a la mesa ${tableId}`);
     });
 
+    // CONFIGURACIÓN: Contraseña del Admin
+    const ADMIN_PASSWORD = "fleiva2026"; // <--- CAMBIA ESTO SI QUIERES
+
     // ADMIN SE UNE
     socket.on('join_admin', () => {
         socket.join('admin_room');
@@ -115,6 +118,15 @@ io.on('connection', (socket) => {
             activeOrders: store.activeOrders,
             dailyTotal: store.dailyTotal
         });
+    });
+
+    // VERIFICAR CONTRASEÑA
+    socket.on('verify_password', (password) => {
+        if (password === ADMIN_PASSWORD) {
+            socket.emit('password_correct');
+        } else {
+            socket.emit('password_incorrect');
+        }
     });
 
     // SOLICITUD DE HISTORIAL (Admin)
