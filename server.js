@@ -11,17 +11,15 @@ const path = require('path');
 const productsBase = require('./public/products.js');
 
 // Servir archivos estáticos desde la carpeta public
-// Servir archivos estáticos desde la carpeta public
 app.use(express.static('public'));
 app.use(express.json());
 
-// --- ROUTES FOR DEPLOYMENT ---
-// Página principal
+// Página principal (menú)
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Mesas dinámicas (para QRs: domain.com/mesa/1)
+// Mesas
 app.get('/mesa/:id', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
