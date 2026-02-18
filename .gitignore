@@ -39,3 +39,4 @@ Thumbs.db
 # Temporary files or test coverage
 coverage/
 .nyc_output/
+.exe
