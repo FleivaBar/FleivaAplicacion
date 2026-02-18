@@ -1,0 +1,17 @@
+{
+  "name": "fleiva-app",
+  "version": "1.0.0",
+  "description": "Aplicación de pedidos Fleiva Bar",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.22.1",
+    "socket.io": "^4.8.3"
+  }
+}

@@ -1,0 +1,688 @@
+/* ========================================
+   VARIABLES CSS
+   ======================================== */
+:root {
+  /* Colores */
+  --morado-oscuro: #20002c;
+  --morado-claro: #6c0097;
+  --morado-claro2: #8b00c2;
+  --fondo-navegador: #280036;
+  --color-fondo: #17041b;
+  --verde-neon: #ea00ff48;
+  --fondo-tarjeta: rgba(0, 0, 0, 0.993);
+  --fondo-tarjeta2: #1f0b201a;
+  --precio-color: #eb00eb;
+
+  /* Espaciado */
+  --spacing-xs: clamp(0.5rem, 2vw, 1rem);
+  --spacing-sm: clamp(1rem, 3vw, 2rem);
+  --spacing-md: clamp(1rem, 3vw, 3rem);
+  --spacing-lg: clamp(1.5rem, 4vw, 4rem);
+
+  /* Tipografía */
+  --font-size-xs: clamp(0.85rem, 2vw, 1rem);
+  --font-size-sm: clamp(0.9rem, 2.5vw, 1.2rem);
+  --font-size-md: clamp(1.1rem, 3vw, 1.3rem);
+  --font-size-lg: clamp(1.2rem, 3vw, 1.5rem);
+  --font-size-xl: clamp(1.5rem, 4vw, 2.5rem);
+  --font-size-xxl: clamp(2.5rem, 8vw, 5rem);
+
+  /* Sombras */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 8px 20px rgba(255, 0, 255, 0.2);
+  --shadow-lg: 0 15px 30px rgba(0, 0, 0, 0.6);
+  --shadow-glow: 0 4px 12px rgba(255, 0, 255, 0.4);
+
+  /* Transiciones */
+  --transition-base: all 0.3s ease;
+}
+
+/* ========================================
+   FUENTES
+   ======================================== */
+@font-face {
+  font-family: 'UrbanBlack';
+  src: url('fonts/Urban_Black.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'UrbanSign';
+  src: url('fonts/UrbanSign.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Swash';
+  src: url('fonts/JunigardenSwash_PERSONAL_USE_ONLY.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'hUNTERS';
+  src: url('fonts/Hunters.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* ========================================
+   RESET Y BASE
+   ======================================== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 180px;
+  /* Espacio para que el título sticky y los chips no tapen el contenido */
+}
+
+body {
+  width: 100vw;
+  min-height: 100vh;
+  color: aliceblue;
+  background:
+    radial-gradient(ellipse at 30% 40%, rgba(75, 0, 130, 0.12) 0%, transparent 50%),
+    radial-gradient(ellipse at 70% 60%, rgba(0, 139, 139, 0.08) 0%, transparent 50%),
+    linear-gradient(to bottom, #0a0a0f, #12111d);
+  background-attachment: fixed;
+  overflow-x: hidden;
+}
+
+/* ========================================
+   HEADER
+   ======================================== */
+header {
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)),
+    url(imagenes/Fondo\ header.jpg);
+  background-size: cover;
+  background-position: center;
+  text-align: center;
+  padding: var(--spacing-xs);
+}
+
+header h1 {
+  font-family: 'Swash', sans-serif;
+  font-size: var(--font-size-xxl);
+  margin-bottom: 0.5rem;
+}
+
+.titulos {
+  text-align: center;
+  font-size: 3.5rem;
+}
+
+.lema {
+  font-size: var(--font-size-sm);
+}
+
+/* ========================================
+   LOGO
+   ======================================== */
+.logo {
+  text-align: center;
+  padding: var(--spacing-xs);
+}
+
+.logo img {
+  width: clamp(18rem, 80vw, 35rem);
+  height: auto;
+  filter: drop-shadow(0 0 15px #dcff16);
+}
+
+/* Animación de "pista" para indicar scroll horizontal */
+@keyframes scrollHint {
+  0% {
+    transform: translateX(0);
+  }
+
+  20% {
+    transform: translateX(-15px);
+  }
+
+  /* Mueve a la izquierda */
+  40% {
+    transform: translateX(0);
+  }
+
+  /* Vuelve */
+  60% {
+    transform: translateX(-8px);
+  }
+
+  /* Rebote pequeño */
+  100% {
+    transform: translateX(0);
+  }
+}
+
+/* ========================================
+   FILTROS RÁPIDOS (CHIPS)
+   ======================================== */
+.filtros-rapidos {
+  display: flex;
+  gap: 0.8rem;
+  padding: 1rem;
+  padding-right: 2rem;
+  /* Espacio extra al final para ver el último item */
+  overflow-x: auto;
+  white-space: nowrap;
+  background: rgba(20, 0, 30, 0.6);
+  backdrop-filter: blur(5px);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  /* Por encima del contenido, debajo de la nav */
+  margin-bottom: 1rem;
+  scrollbar-width: none;
+  /* Firefox */
+  /* Sombra interior a la derecha para indicar continuidad */
+  box-shadow: inset -20px 0 20px -15px rgba(235, 0, 235, 0.8);
+}
+
+.filtros-rapidos::-webkit-scrollbar {
+  display: none;
+  /* Chrome/Safari */
+}
+
+/* ========================================
+   NAVEGACIÓN (ESTILO MÓVIL Y ESCRITORIO)
+   ======================================== */
+nav {
+  display: none;
+  /*     background: var(--fondo-navegador);
+    padding: 1rem;
+    text-align: center;
+    position: sticky; */
+  /* Hacemos la navegación "pegajosa" */
+  /*     top: 0;
+    z-index: 1000; */
+  /* Aseguramos que quede sobre todo pero debajo de los chips en móvil */
+  /*     box-shadow: var(--shadow-md); */
+  /* Sombra más fuerte para separar del contenido */
+  /*     backdrop-filter: blur(10px); */
+  /* Efecto vidrio esmerilado */
+  /*     background: rgba(40, 0, 54, 0.95); */
+  /* Fondo semitransparente */
+}
+
+
+.chip {
+  background: rgba(108, 0, 151, 0.4);
+  border: 1px solid var(--morado-claro);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+
+  /* Aplicar animación al cargar */
+  animation: scrollHint 2s ease-out 1s 1;
+  /* Espera 1s, dura 2s, 1 vez */
+}
+
+.chip:hover,
+.chip:active {
+  background: var(--morado-claro);
+  border-color: var(--precio-color);
+  transform: scale(1.05);
+}
+
+/* Ajuste para que el scroll suave funcione bien con sticky headers */
+html {
+  scroll-padding-top: 80px;
+  /* Espacio para que el título no quede tapado */
+}
+
+/* ========================================
+   RESERVAS
+   ======================================== */
+.seccion-reservas {
+  text-align: center;
+  padding: 3rem 1rem;
+  background: linear-gradient(135deg, rgba(20, 0, 20, 0.8), rgba(40, 0, 40, 0.6));
+  border-radius: 20px;
+  border: 1px solid var(--morado-claro);
+  margin: 2rem auto;
+  max-width: 800px;
+  box-shadow: 0 0 20px var(--morado-claro2);
+}
+
+.seccion-reservas p {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+}
+
+.boton-whatsapp {
+  display: inline-block;
+  background-color: #25D366;
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 50px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-decoration: none;
+  box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.boton-whatsapp:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.6);
+  background-color: #20bd5a;
+}
+
+/* ========================================
+   MAPA DE UBICACIÓN
+   ======================================== */
+.mapa-container {
+  width: 100%;
+  max-width: 800px;
+  margin: 2rem auto;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(108, 0, 151, 0.3);
+  border: 1px solid var(--morado-claro);
+}
+
+.mapa-iframe {
+  width: 100%;
+  height: 350px;
+  border: 0;
+  display: block;
+}
+
+/* ========================================
+   FOOTER
+   ======================================== */
+footer {
+  background: #0a000f;
+  border-top: 2px solid var(--morado-claro);
+  padding: 3rem 1rem;
+  text-align: center;
+  margin-top: 4rem;
+}
+
+.footer-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.redes-sociales a {
+  color: white;
+  text-decoration: none;
+  font-size: 1.5rem;
+  margin: 0 1rem;
+  transition: color 0.3s ease;
+}
+
+.redes-sociales a:hover {
+  color: var(--precio-color);
+  /* Rosa neon */
+  text-shadow: 0 0 10px var(--precio-color);
+}
+
+footer p {
+  opacity: 0.7;
+  font-size: 0.9rem;
+}
+
+
+
+.navegador {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--morado-claro) 0%, var(--morado-claro2) 100%);
+  color: white;
+  border: none;
+  padding: clamp(0.6rem, 2vw, 0.8rem) clamp(1.2rem, 4vw, 2rem);
+  font-size: var(--font-size-xs);
+  font-weight: bold;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  border-radius: 25px;
+  margin: 0 0.5rem;
+  box-shadow: 0 2px 8px rgba(163, 0, 168, 0.25);
+  transition: var(--transition-base);
+  will-change: transform;
+}
+
+.navegador:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-glow);
+}
+
+/* ========================================
+   SECCIONES
+   ======================================== */
+section {
+  max-width: 1200px;
+  margin: var(--spacing-md) auto;
+  padding: var(--spacing-sm);
+}
+
+section h2 {
+  font-size: var(--font-size-xl);
+  text-align: center;
+  margin-bottom: var(--spacing-sm);
+  text-transform: uppercase;
+}
+
+.subtitulo {
+  background: var(--fondo-navegador);
+  padding: 1rem;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+  margin-top: var(--spacing-sm);
+}
+
+/* ========================================
+   GRID DE TARJETAS
+   ======================================== */
+.tarjetas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+  gap: var(--spacing-sm);
+  margin-top: 2rem;
+}
+
+/* ========================================
+   TARJETAS DE BEBIDAS
+   ======================================== */
+.tarjeta-bebida {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.8rem;
+  background: linear-gradient(135deg, var(--fondo-tarjeta) 0%, var(--fondo-tarjeta2) 100%);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--verde-neon);
+  border-radius: 15px;
+  padding: clamp(1rem, 3vw, 1.5rem);
+  transition: var(--transition-base);
+  will-change: transform;
+}
+
+.tarjeta-bebida:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-md);
+  border-color: #ff00f2;
+}
+
+.tarjeta-bebida h3 {
+  font-size: var(--font-size-lg);
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.tarjeta-bebida .precio {
+  font-size: var(--font-size-md);
+  font-weight: bold;
+  color: var(--precio-color);
+  margin-top: auto;
+}
+
+/* ========================================
+   IMÁGENES DE PRODUCTOS
+   ======================================== */
+.producto {
+  width: 100%;
+  max-width: 260px;
+  height: 220px;
+  object-fit: contain;
+  margin: 0.5rem 0;
+  border-radius: 30px;
+  filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.6));
+  box-shadow:
+    var(--shadow-lg),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+/* ===============================
+   EVENTOS - MINIATURAS
+   =============================== */
+/* ===============================
+   EVENTOS - FLYERS GRANDES
+   =============================== */
+.eventos {
+  display: grid;
+  grid-template-columns: 1fr;
+  /* 📱 mobile first */
+  gap: 1.5rem;
+  padding: 1rem;
+}
+
+/* flyer grande */
+.flyer img {
+  width: 100%;
+  height: auto;
+  display: block;
+
+  border-radius: 18px;
+  border: 2px solid var(--precio-color);
+  /* morado #eb00eb */
+
+  box-shadow:
+    0 0 12px rgba(235, 0, 235, 0.4),
+    0 10px 25px rgba(0, 0, 0, 0.6);
+}
+
+
+/* ========================================
+   BOTÓN FLOTANTE WHATSAPP (FAB)
+   ======================================== */
+.fab-whatsapp-float {
+  position: fixed;
+  bottom: 90px;
+  /* Encima de la barra de navegación */
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  background-color: #25D366;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 15px rgba(37, 211, 102, 0.5);
+  z-index: 2000;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  text-decoration: none;
+}
+
+.fab-whatsapp-float svg {
+  width: 35px;
+  height: 35px;
+  fill: white;
+}
+
+.fab-whatsapp-float:hover {
+  transform: scale(1.1) rotate(10deg);
+}
+
+/* ========================================
+   RESPONSIVE - MOBILE
+   ======================================== */
+@media (max-width: 768px) {
+
+  /* 1. Navegación Inferior (App Style) */
+  /* nav {
+      position: fixed;
+      bottom: 0;
+      top: auto;
+      width: 100%;
+      background: rgba(20, 0, 30, 0.98);
+      backdrop-filter: blur(15px);
+      border-top: 1px solid var(--morado-claro);
+      padding: 0.8rem;
+      display: flex;
+      justify-content: center;
+      box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+    }
+  
+    .navegador {
+      display: block;
+      width: 100%;
+      margin: 0;
+      text-align: center;
+      padding: 0.8rem;
+      border-radius: 12px;
+    } */
+
+  /* Ajuste para que el contenido no quede tapado por la nav inferior */
+  body {
+    padding-bottom: 80px;
+  }
+
+  /* 2. Títulos "Sticky" (Pegajosos) */
+  /* Solo dejamos sticky los H2 (Categorías principales) para evitar conflictos con H3 */
+  section h2 {
+    position: sticky;
+    top: 0;
+    background: rgba(23, 4, 27, 0.98);
+    /* Fondo más sólido */
+    z-index: 500;
+    padding: 1rem;
+    margin: 0 -0.5rem 1rem -0.5rem;
+    /* Extender un poco a los lados */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    border-bottom: 2px solid var(--morado-claro);
+    color: var(--precio-color);
+  }
+
+  /* Los subtítulos (h3) ya NO son sticky para que no se monten feo */
+  .subtitulo {
+    position: static;
+    margin-top: 1rem;
+    background: transparent;
+    box-shadow: none;
+    text-align: left;
+    padding-left: 0.5rem;
+    color: var(--morado-claro2);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  /* 3. Carrusel Horizontal (Opción A) */
+  .tarjetas {
+    display: flex;
+    /* Cambiamos grid por flex */
+    grid-template-columns: none;
+    overflow-x: auto;
+    /* Scroll horizontal */
+    scroll-snap-type: x mandatory;
+    /* Efecto magnético */
+    gap: 1rem;
+    padding: 0.5rem 0.5rem 1.5rem 0.5rem;
+    /* Espacio inferior para scroll */
+    scrollbar-width: none;
+    /* Ocultar scrollbar en Firefox */
+  }
+
+  .tarjetas::-webkit-scrollbar {
+    display: none;
+    /* Ocultar scrollbar en Chrome/Safari */
+  }
+
+  /* Tarjetas individuales en carrusel */
+  .tarjeta-bebida {
+    min-width: 85%;
+    /* Ocupa el 85% del ancho para ver un poco de la siguiente */
+    flex: 0 0 85%;
+    scroll-snap-align: center;
+    margin-right: 0;
+    transform: none !important;
+    /* Desactivar hover effects complejos en móvil */
+  }
+
+  /* Ajuste de imágenes en carrusel */
+  .producto {
+    width: 100%;
+    height: 40vh;
+    /* Altura controlada */
+    max-width: none;
+    object-fit: contain;
+    margin: 0;
+  }
+}
+
+/* Clase para ocultar el botón flotante suavemente */
+.fab-whatsapp-float.fab-hidden {
+  transform: scale(0);
+  opacity: 0;
+  pointer-events: none;
+}
+
+
+/* Ocultar barra de navegación al hacer scroll abajo en móvil */
+@media (max-width: 768px) {
+  .filtros-rapidos {
+    top: 0;
+    /* Sticky arriba */
+    background: rgba(20, 0, 30, 0.95);
+    padding: 0.8rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  }
+}
+
+
+/* ========================================
+   FONDO DE PARTICULAS
+   ======================================== */
+#particle-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  z-index: 0;
+  /* Detrás del contenido, sobre el fondo */
+  pointer-events: none;
+}
+
+header,
+main,
+footer {
+  position: relative;
+  z-index: 2;
+}
+
+
+.particle {
+  position: absolute;
+  /* El usuario pidió partículas de color morado */
+  background: radial-gradient(circle, var(--morado-claro2) 0%, rgba(108, 0, 151, 0) 70%);
+  border-radius: 50%;
+  animation-name: floatParticle;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+}
+
+@keyframes floatParticle {
+
+  0%,
+  100% {
+    transform: translate(0, 0);
+    opacity: 0.3;
+  }
+
+  50% {
+    transform: translate(30px, -30px);
+    opacity: 0.7;
+  }
+}

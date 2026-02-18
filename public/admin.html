@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fleiva Admin - Pedidos</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .admin-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--morado-claro);
+            padding-bottom: 1rem;
+        }
+
+        .orders-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .table-card {
+            background: rgba(20, 0, 30, 0.9);
+            border: 1px solid var(--precio-color);
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 0 15px rgba(235, 0, 235, 0.2);
+            position: relative;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .table-total {
+            font-size: 1.5rem;
+            color: var(--precio-color);
+            font-weight: bold;
+            text-align: right;
+            margin-top: 1rem;
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            border-bottom: 1px dotted rgba(255, 255, 255, 0.2);
+            padding-bottom: 2px;
+        }
+
+        .clear-btn {
+            background: linear-gradient(45deg, #ff0055, #ff00aa);
+            border: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 1rem;
+            width: 100%;
+            transition: transform 0.2s;
+        }
+
+        .clear-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .badge {
+            background: var(--morado-claro);
+            padding: 0.2rem 0.6rem;
+            border-radius: 10px;
+            font-size: 0.8rem;
+        }
+
+        /* Notification Sound helper */
+        #notification-sound {
+            display: none;
+        }
+
+        /* History Modal */
+        .history-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .history-modal {
+            background: #1a0025;
+            padding: 2rem;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 800px;
+            border: 2px solid var(--morado-claro);
+            color: white;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .history-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid var(--precio-color);
+        }
+
+        .inventory-list {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .inventory-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.8rem;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stock-input {
+            width: 60px;
+            padding: 5px;
+            background: #333;
+            border: 1px solid #555;
+            color: white;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .btn-header {
+            background: var(--morado-claro);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+            font-weight: bold;
+        }
+
+        .btn-close-day {
+            background: linear-gradient(45deg, #00ff00, #00aa00);
+            color: black;
+        }
+    </style>
+</head>
+
+<body>
+    <audio id="notification-sound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"></audio>
+
+    <header class="admin-header">
+        <h1>Admin Dashboard</h1>
+        <p>Monitor de Pedidos en Tiempo Real</p>
+        <div
+            style="background: rgba(108, 0, 151, 0.2); padding: 1rem; border-radius: 10px; display: inline-block; margin-top: 1rem; border: 1px solid var(--precio-color);">
+            <strong style="font-size: 1.2rem;">💰 Ventas del Día: </strong>
+            <span id="daily-total" style="font-size: 1.5rem; color: #00ff00; font-weight: bold;">$0</span>
+        </div>
+        <div style="margin-top: 1rem;">
+            <button class="btn-header" onclick="requestHistory()">📜 Ver Historial</button>
+            <a href="inventory.html" class="btn-header" style="text-decoration: none;">📦 Inventario</a>
+            <button class="btn-header btn-close-day" onclick="closeDay()">✅ Cerrar Día y Enviar a WhatsApp</button>
+        </div>
+    </header>
+
+    <main id="orders-container" class="orders-grid">
+        <!-- Las mesas aparecerán aquí dinámicamente via JS -->
+        <p style="text-align: center; width: 100%; grid-column: 1/-1; opacity: 0.6;">Esperando pedidos...</p>
+    </main>
+
+    <!-- History Modal -->
+    <div id="history-overlay" class="history-overlay">
+        <div class="history-modal">
+            <button onclick="document.getElementById('history-overlay').style.display='none'"
+                style="position: absolute; top: 10px; right: 10px; background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer;">&times;</button>
+            <h2
+                style="margin-top: 0; color: var(--morado-claro); border-bottom: 1px solid #555; padding-bottom: 0.5rem;">
+                Historial de Mesas Cerradas</h2>
+            <div id="history-list">Cargando...</div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="products.js"></script>
+    <script>
+        const socket = io();
+        const container = document.getElementById('orders-container');
+        const notifSound = document.getElementById('notification-sound');
+
+        // Estructura local: { tableId: { items: [], total: 0 } }
+        let tablesData = {};
+
+        // Pre-generar opciones del menú
+        let productOptionsHtml = '<option value="">-- Seleccionar del Menú --</option>';
+        if (typeof products !== 'undefined') {
+            products.forEach(cat => {
+                productOptionsHtml += `<optgroup label="${cat.category}">`;
+                cat.items.forEach(item => {
+                    productOptionsHtml += `<option value="${item.name}|${item.price}">${item.name} - $${item.price}</option>`;
+                });
+                productOptionsHtml += `</optgroup>`;
+            });
+        }
+
+
+        socket.emit('join_admin');
+
+
+        socket.on('initial_data', (data) => {
+            console.log('Datos iniciales:', data);
+
+            // data ahora trae { activeOrders, dailyTotal }
+            const { activeOrders, dailyTotal } = data;
+            updateDailyTotal(dailyTotal);
+
+            // Reiniciamos la vista
+            tablesData = {};
+            // Procesar la estructura activeOrders del servidor
+            for (const [tableId, orders] of Object.entries(activeOrders)) {
+                if (!tablesData[tableId]) {
+                    tablesData[tableId] = { orders: [], grandTotal: 0 };
+                }
+                orders.forEach(order => {
+                    tablesData[tableId].orders.push(order);
+                    tablesData[tableId].grandTotal += order.total;
+                });
+            }
+            renderAllTables();
+        });
+
+        socket.on('new_order', (order) => {
+            console.log('Nuevo pedido:', order);
+            playNotification();
+
+            const { tableId, items, total } = order;
+
+            if (!tablesData[tableId]) {
+                tablesData[tableId] = { orders: [], grandTotal: 0 };
+            }
+
+            tablesData[tableId].orders.push(order);
+            tablesData[tableId].grandTotal += total;
+
+            renderAllTables();
+        });
+
+        socket.on('table_cleared', (data) => {
+            // data puede ser solo tableId (viejo) o {tableId, newDailyTotal} (nuevo)
+            let tId = data;
+            if (typeof data === 'object') {
+                tId = data.tableId;
+                updateDailyTotal(data.newDailyTotal);
+            }
+
+            delete tablesData[tId];
+            renderAllTables();
+        });
+
+        function updateDailyTotal(amount) {
+            const el = document.getElementById('daily-total');
+            if (amount !== undefined && el) {
+                el.innerText = `$${amount.toLocaleString()}`;
+            }
+        }
+
+        function addManualOrder(tableId) {
+            const nameInput = document.getElementById(`manual-item-${tableId}`);
+            const priceInput = document.getElementById(`manual-price-${tableId}`);
+
+            const name = nameInput.value.trim();
+            const price = parseInt(priceInput.value);
+
+            if (!name || isNaN(price) || price <= 0) {
+                return alert('Ingresa un nombre y precio válido');
+            }
+
+            // Simular estructura de pedido
+            const orderData = {
+                tableId: tableId,
+                items: [{ name: `(Manual) ${name}`, price: price, quantity: 1 }],
+                total: price
+            };
+
+            // Enviamos el pedido al socket (usamos el mismo evento que el cliente)
+            socket.emit('place_order', orderData);
+
+            // Limpiar inputs
+            nameInput.value = '';
+            priceInput.value = '';
+
+            // Reset select
+            const select = document.getElementById(`manual-select-${tableId}`);
+            if (select) select.selectedIndex = 0;
+        }
+
+        function fillManualInputs(tableId, value) {
+            if (!value) return;
+            const [name, price] = value.split('|');
+            document.getElementById(`manual-item-${tableId}`).value = name;
+            document.getElementById(`manual-price-${tableId}`).value = price;
+        }
+
+        function playNotification() {
+            try {
+                notifSound.currentTime = 0;
+                notifSound.play().catch(e => console.log('Error playing sound:', e));
+            } catch (e) { }
+        }
+
+        function renderAllTables() {
+            container.innerHTML = '';
+            const tableIds = Object.keys(tablesData).sort();
+
+            if (tableIds.length === 0) {
+                container.innerHTML = '<p style="text-align: center; width: 100%; grid-column: 1/-1; opacity: 0.6;">No hay pedidos activos.</p>';
+                return;
+            }
+
+            tableIds.forEach(tId => {
+                const data = tablesData[tId];
+                const card = document.createElement('div');
+                card.className = 'table-card';
+
+                let itemsHtml = '';
+                // Recorremos todos los pedidos de esta mesa
+                data.orders.forEach((order, index) => {
+                    // Separador si hay múltiples pedidos
+                    if (index > 0) itemsHtml += `<div style="margin: 0.5rem 0; border-top: 1px dashed #666;"></div>`;
+
+                    // Hora del pedido
+                    const time = new Date(order.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    itemsHtml += `<div style="font-size: 0.75rem; color: #aaa; margin-bottom: 0.25rem;">Pedido ${index + 1} - ${time}</div>`;
+
+                    order.items.forEach(item => {
+                        itemsHtml += `
+                            <div class="order-item">
+                                <span>${item.quantity}x ${item.name}</span>
+                                <span>$${(item.price * item.quantity).toLocaleString()}</span>
+                            </div>
+                        `;
+                    });
+                });
+
+                card.innerHTML = `
+                    <div class="table-header">
+                        <h2>Mesa ${tId}</h2>
+                        <span class="badge">${data.orders.length} Pedidos</span>
+                    </div>
+                    <div class="items-list">
+                        ${itemsHtml}
+                    </div>
+                    <div class="table-total">
+                        Total: $${data.grandTotal.toLocaleString()}
+                    </div>
+
+                    <div style="background: rgba(255,255,255,0.05); padding: 0.8rem; margin: 1rem 0; border-radius: 8px;">
+                        <div style="margin-bottom:0.5rem; font-size:0.9rem; color:#ccc;">➕ Agregar Manual:</div>
+                        
+                        <select id="manual-select-${tId}" onchange="fillManualInputs('${tId}', this.value)" style="width: 100%; padding: 5px; margin-bottom: 8px; border-radius: 4px; border:none; background: #eee; color: #333;">
+                            ${productOptionsHtml}
+                        </select>
+
+                        <div style="display: flex; gap: 5px;">
+                            <input type="text" id="manual-item-${tId}" placeholder="Producto" style="width: 60%; padding: 5px; border-radius: 4px; border:none;">
+                            <input type="number" id="manual-price-${tId}" placeholder="$" style="width: 25%; padding: 5px; border-radius: 4px; border:none;">
+                            <button onclick="addManualOrder('${tId}')" style="width: 15%; background: var(--precio-color); border:none; color:white; border-radius:4px; cursor:pointer;">+</button>
+                        </div>
+                    </div>
+
+                    <button class="clear-btn" onclick="clearTable('${tId}')">Liberar Mesa (Pagado)</button>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function clearTable(tableId) {
+            if (confirm(`¿Confirmar pago y liberar Mesa ${tableId}?`)) {
+                socket.emit('clear_table', tableId);
+                // Optimista update
+                delete tablesData[tableId];
+                renderAllTables();
+            }
+        }
+
+        // --- HISTORY & CLOSE DAY LOGIC ---
+
+        function requestHistory() {
+            document.getElementById('history-overlay').style.display = 'flex';
+            document.getElementById('history-list').innerHTML = 'Cargando datos...';
+            socket.emit('get_history');
+        }
+
+        socket.on('history_data', (history) => {
+            const list = document.getElementById('history-list');
+            if (!history || history.length === 0) {
+                list.innerHTML = '<p>No hay historial de ventas registrado.</p>';
+                return;
+            }
+
+            let html = '';
+            history.forEach(entry => {
+                const date = new Date(entry.timestamp).toLocaleString();
+
+                // Agrupar items por nombre para mostrar resumen
+                const itemSummary = {};
+                if (entry.detailedOrders) {
+                    entry.detailedOrders.forEach(order => {
+                        if (order.items) {
+                            order.items.forEach(item => {
+                                if (!itemSummary[item.name]) {
+                                    itemSummary[item.name] = 0;
+                                }
+                                itemSummary[item.name] += item.quantity;
+                            });
+                        }
+                    });
+                }
+
+                // Generar HTML de items
+                let itemsHtml = '';
+                for (const [name, qty] of Object.entries(itemSummary)) {
+                    itemsHtml += `<span style="display:inline-block; background:rgba(255,255,255,0.1); padding:2px 6px; border-radius:4px; margin:2px; font-size:0.8rem;">${qty}x ${name}</span>`;
+                }
+
+                html += `
+                    <div class="history-item" style="flex-direction: column; align-items: stretch;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                            <div>
+                                <strong>Mesa ${entry.tableId}</strong><br>
+                                <span style="font-size: 0.8rem; color: #aaa;">${date}</span>
+                            </div>
+                            <div style="text-align: right;">
+                                <span style="color: #00ff00; font-weight: bold; font-size: 1.2rem;">$${entry.total.toLocaleString()}</span>
+                            </div>
+                        </div>
+                        <div style="border-top: 1px dashed #555; padding-top: 0.5rem; color: #ccc;">
+                            ${itemsHtml}
+                        </div>
+                    </div>
+                `;
+            });
+            list.innerHTML = html;
+        });
+
+        function closeDay() {
+            if (confirm("⚠️ ¿Estás seguro de cerrar el día?\n\nEsto reiniciará el contador de 'Ventas del Día' a $0 y preparará el reporte.")) {
+                socket.emit('close_day');
+            }
+        }
+
+        socket.on('day_closed', (data) => {
+            const { closedTotal, date } = data;
+            updateDailyTotal(0); // Reinicia visualmente a 0
+
+            // Construir mensaje de WhatsApp
+            const phone = "573045330576";
+            const message = `📅 *Cierre de Caja - Fleiva Bar*\nFecha: ${date}\n\n💰 *Total Vendido:* $${closedTotal.toLocaleString()}\n\n✅ El sistema ha sido reiniciado para el siguiente día.`;
+
+            const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+
+            // Abrir WhatsApp en nueva pestaña
+            window.open(url, '_blank');
+        });
+
+
+
+    </script>
+</body>
+
+</html>

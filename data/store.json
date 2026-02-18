@@ -1,0 +1,229 @@
+{
+  "activeOrders": {},
+  "dailyTotal": 0,
+  "history": [
+    {
+      "id": "1771291310426",
+      "tableId": "1",
+      "total": 24500,
+      "itemsCount": 1,
+      "timestamp": "2026-02-17T01:21:50.426Z",
+      "detailedOrders": [
+        {
+          "items": [
+            {
+              "name": "CERVEZAS - BBC",
+              "price": 9000,
+              "quantity": 1
+            },
+            {
+              "name": "CERVEZAS - 3 Cordilleras",
+              "price": 9000,
+              "quantity": 1
+            },
+            {
+              "name": "CERVEZAS - Pilsen",
+              "price": 6500,
+              "quantity": 1
+            }
+          ],
+          "total": 24500,
+          "timestamp": "2026-02-17T01:21:33.002Z"
+        }
+      ]
+    },
+    {
+      "id": "1771291312291",
+      "tableId": "3",
+      "total": 23000,
+      "itemsCount": 1,
+      "timestamp": "2026-02-17T01:21:52.291Z",
+      "detailedOrders": [
+        {
+          "items": [
+            {
+              "name": "CERVEZAS - 3 Cordilleras",
+              "price": 9000,
+              "quantity": 1
+            },
+            {
+              "name": "CERVEZAS - Light",
+              "price": 5000,
+              "quantity": 1
+            },
+            {
+              "name": "CERVEZAS - BBC",
+              "price": 9000,
+              "quantity": 1
+            }
+          ],
+          "total": 23000,
+          "timestamp": "2026-02-17T01:21:43.490Z"
+        }
+      ]
+    },
+    {
+      "id": "1771292106607",
+      "tableId": "1",
+      "total": 27000,
+      "itemsCount": 1,
+      "timestamp": "2026-02-17T01:35:06.607Z",
+      "detailedOrders": [
+        {
+          "items": [
+            {
+              "name": "CERVEZAS - 3 Cordilleras",
+              "price": 9000,
+              "quantity": 3
+            }
+          ],
+          "total": 27000,
+          "timestamp": "2026-02-17T01:34:58.627Z"
+        }
+      ]
+    },
+    {
+      "id": "1771292569536",
+      "tableId": "1",
+      "total": 18000,
+      "itemsCount": 1,
+      "timestamp": "2026-02-17T01:42:49.536Z",
+      "detailedOrders": [
+        {
+          "items": [
+            {
+              "name": "Club Colombia (Botella)",
+              "price": 6000,
+              "quantity": 3
+            }
+          ],
+          "total": 18000,
+          "timestamp": "2026-02-17T01:42:03.615Z"
+        }
+      ]
+    },
+    {
+      "id": "1771389040478",
+      "tableId": "1",
+      "total": 54000,
+      "itemsCount": 2,
+      "timestamp": "2026-02-18T04:30:40.478Z",
+      "detailedOrders": [
+        {
+          "items": [
+            {
+              "name": "Media aguardiente Azul",
+              "price": 45000,
+              "quantity": 1
+            }
+          ],
+          "total": 45000,
+          "timestamp": "2026-02-18T04:30:14.586Z"
+        },
+        {
+          "items": [
+            {
+              "name": "(Manual) 3 Cordilleras (Botella)",
+              "price": 9000,
+              "quantity": 1
+            }
+          ],
+          "total": 9000,
+          "timestamp": "2026-02-18T04:30:32.607Z"
+        }
+      ]
+    }
+  ],
+  "inventory": {
+    "Pilsen": 50,
+    "Poker": 50,
+    "Aguila": 50,
+    "Light": 50,
+    "Club Colombia": 47,
+    "Corona": 50,
+    "3 Cordilleras": 20,
+    "BBC": 50,
+    "Andina": 50,
+    "Heineken": 50,
+    "Michelada de soda": 50,
+    "Pilsen - Aguila - Poker - Light": 50,
+    "Cereza": 50,
+    "Aguardiente": 1,
+    "Aguardiente amarillo": 50,
+    "Ron": 50,
+    "Ron Bacardí": 50,
+    "Tequila Jimador": 50,
+    "Tequila José Cuervo": 50,
+    "Brandy": 50,
+    "Shot Vodka Smirnoff": 50,
+    "Shot Vodka Absolut": 50,
+    "Jack Daniels Honey": 50,
+    "Jack Daniels No. 7": 50,
+    "Jägermeister": 50,
+    "Media aguardiente Azul": 49,
+    "Media aguardiente Verde": 50,
+    "Media aguardiente Rojo": 50,
+    "Botella aguardiente Amarillo": 50,
+    "Media Ron Caldas tradicional": 50,
+    "Media Ron Caldas esencial": 50,
+    "Botella Ron Caldas tradicional": 50,
+    "Botella Ron Caldas esencial": 50,
+    "Media Ron Medellín": 50,
+    "Botella Ron Medellín": 50,
+    "Botella Jimador reposado": 2,
+    "Botella José Cuervo": 50,
+    "Whisky Jack Daniels No. 7": 50,
+    "Botella Baileys": 50,
+    "Botella Jägermeister": 50,
+    "Botella Vodka Smirnoff": 50,
+    "Botella Ron Bacardí Añejo": 50,
+    "Botella Ron Bacardí Blanco": 50,
+    "Media de Brandy Domecq": 50,
+    "Unidad de cualquiera": 50,
+    "Medio Lucky - Malboro": 50,
+    "Medio Bostón": 50,
+    "Pilsen (Botella)": 50,
+    "Poker (Botella)": 50,
+    "Aguila (Botella)": 50,
+    "Light (Botella)": 50,
+    "Club Colombia (Botella)": 50,
+    "Corona (Botella)": 50,
+    "3 Cordilleras (Botella)": 50,
+    "BBC (Botella)": 50,
+    "Andina (Latón)": 50,
+    "Pilsen (Latón)": 50,
+    "Poker (Latón)": 50,
+    "Aguila (Latón)": 50,
+    "Club Colombia (Latón)": 50,
+    "Heineken (Latón)": 50,
+    "Michelada Corona": 50,
+    "Michelada Heineken": 50,
+    "Michelada Club Colombia": 50,
+    "Michelada BBC": 50,
+    "Michelada 3 Cordilleras": 50,
+    "Michelada Pilsen": 50,
+    "Michelada Aguila": 50,
+    "Michelada Poker": 50,
+    "Michelada Light": 50,
+    "Michelada Andina": 50,
+    "Michelada Saborizada Corona": 50,
+    "Michelada Saborizada Heineken": 50,
+    "Michelada Saborizada Club Colombia": 50,
+    "Michelada Saborizada BBC": 50,
+    "Michelada Saborizada 3 Cordilleras": 50,
+    "Michelada Saborizada Nacionales": 50,
+    "Michelada Saborizada Andina": 50,
+    "Soda Cereza": 50,
+    "Aguardiente (Trago)": 50,
+    "Aguardiente amarillo (Trago)": 50,
+    "Ron (Trago)": 50,
+    "Ron Bacardí (Trago)": 50,
+    "Tequila Jimador (Trago)": 50,
+    "Tequila José Cuervo (Trago)": 50,
+    "Brandy (Trago)": 50,
+    "Jack Daniels Honey (Trago)": 50,
+    "Jack Daniels No. 7 (Trago)": 50,
+    "Jägermeister (Trago)": 50,
+    "Cigarrillo (Unidad)": 50
+  }
+}

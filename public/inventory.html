@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventario - Fleiva Bar</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--morado-claro);
+            padding-bottom: 1rem;
+        }
+
+        .inventory-list {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .inventory-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid var(--precio-color);
+        }
+
+        .stock-input {
+            width: 80px;
+            padding: 10px;
+            background: #333;
+            border: 1px solid #555;
+            color: white;
+            border-radius: 4px;
+            text-align: center;
+            font-size: 1.2rem;
+        }
+
+        .back-btn {
+            background: #666;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        .alert-box {
+            background: rgba(255, 68, 68, 0.2);
+            border: 1px solid #ff4444;
+            color: #ffcccc;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            display: none;
+            /* Oculto por defecto */
+        }
+    </style>
+</head>
+
+<body>
+    <a href="admin.html" class="back-btn">⬅ Volver al Panel</a>
+
+    <header class="header">
+        <h1>📦 Gestión de Inventario</h1>
+        <p>Ajuste de Stock en Tiempo Real</p>
+    </header>
+
+    <div id="low-stock-alert" class="alert-box">
+        <strong>⚠️ Atención:</strong> Los siguientes productos tienen stock bajo (menos de 5):
+        <ul id="low-stock-list" style="margin-top: 5px; padding-left: 20px;"></ul>
+    </div>
+
+    <div id="loading" style="text-align: center;">Cargando inventario...</div>
+    <div id="inventory-list" class="inventory-list"></div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        const listContainer = document.getElementById('inventory-list');
+        const loading = document.getElementById('loading');
+
+        // Solicitar inventario al cargar
+        socket.emit('get_inventory');
+
+        socket.on('inventory_data', (inventory) => {
+            loading.style.display = 'none';
+            if (!inventory) return;
+
+            const alertBox = document.getElementById('low-stock-alert');
+            const alertList = document.getElementById('low-stock-list');
+            let lowStockItems = [];
+
+            // Ordenar alfabéticamente
+            const sortedKeys = Object.keys(inventory).sort();
+
+            let html = '';
+            sortedKeys.forEach(prodName => {
+                const stock = inventory[prodName];
+                const isLow = stock < 5;
+                const colorStyle = isLow ? 'color: #ff4444; font-weight: bold; border-left: 3px solid red; padding-left:5px;' : 'color: white;';
+
+                if (isLow) {
+                    lowStockItems.push(`${prodName} (${stock})`);
+                }
+
+                html += `
+                    <div class="inventory-item">
+                        <span style="${colorStyle}; font-size: 1.1rem;">${prodName}</span>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span>Cant:</span>
+                            <input type="number" class="stock-input" value="${stock}" 
+                                onchange="updateStock('${prodName}', this)" min="0">
+                        </div>
+                    </div>
+                `;
+            });
+            listContainer.innerHTML = html;
+
+            // Mostrar u ocultar alerta
+            if (lowStockItems.length > 0) {
+                alertBox.style.display = 'block';
+                alertList.innerHTML = lowStockItems.map(item => `<li>${item}</li>`).join('');
+            } else {
+                alertBox.style.display = 'none';
+            }
+        });
+
+        function updateStock(productName, inputElement) {
+            let newStock = parseInt(inputElement.value);
+            if (isNaN(newStock) || newStock < 0) {
+                alert("Por favor ingresa una cantidad válida");
+                return;
+            }
+
+            socket.emit('update_stock', { productName, newStock });
+
+            // Feedback visual: parpadeo verde
+            inputElement.style.border = "2px solid #00ff00";
+            inputElement.style.backgroundColor = "#004400";
+            setTimeout(() => {
+                inputElement.style.border = "1px solid #555";
+                inputElement.style.backgroundColor = "#333";
+            }, 500);
+        }
+    </script>
+</body>
+
+</html>
