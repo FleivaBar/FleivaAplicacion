@@ -11,22 +11,22 @@ const path = require('path');
 const productsBase = require('./public/products.js');
 
 // Servir archivos estáticos desde la carpeta public
-app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 
-// Página principal (menú)
+// 👉 esto SIEMPRE funciona en producción
+app.use(express.static(path.resolve(__dirname, 'public')));
+
+// FRONT
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    res.sendFile(path.resolve(__dirname, 'public/index.html'));
 });
 
-// Mesas
 app.get('/mesa/:id', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    res.sendFile(path.resolve(__dirname, 'public/index.html'));
 });
 
-// Panel admin
 app.get('/admin', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+    res.sendFile(path.resolve(__dirname, 'public/admin.html'));
 });
 
 // --- PERSISTENCIA DE DATOS ---
