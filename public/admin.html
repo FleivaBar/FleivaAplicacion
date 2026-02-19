@@ -500,6 +500,143 @@
             font-size: 0.9rem;
             display: none;
         }
+
+        /* ============================
+           RESPONSIVE MÓVIL
+           ============================ */
+
+        /* Contenedor de botones del header: flex wrap para que se acomoden */
+        .admin-btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 1rem;
+        }
+
+        .admin-btn-group .btn-header {
+            margin-left: 0;
+            flex: 1 1 auto;
+            min-width: 130px;
+            max-width: 220px;
+            text-align: center;
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 0.75rem;
+            }
+
+            .admin-header h1 {
+                font-size: 1.4rem;
+            }
+
+            .admin-header p {
+                font-size: 0.85rem;
+            }
+
+            /* Caja de Ventas del Día */
+            .admin-header>div:first-of-type {
+                display: block;
+                width: 100%;
+                box-sizing: border-box;
+                text-align: center;
+                padding: 0.75rem;
+            }
+
+            /* Botones: una columna en móvil muy pequeño */
+            .admin-btn-group {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 6px;
+            }
+
+            .admin-btn-group .btn-header {
+                max-width: 100%;
+                width: 100%;
+                padding: 0.65rem 0.8rem;
+                font-size: 0.9rem;
+            }
+
+            /* Gastos y ganancia neta en columna */
+            .admin-stats-row {
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+                align-items: center;
+                font-size: 0.85rem;
+            }
+
+            /* Grid de mesas: 1 columna */
+            .orders-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            /* Modales a 95% de ancho */
+            .history-modal,
+            .expenses-modal {
+                width: 95%;
+                padding: 1.2rem;
+                max-height: 90vh;
+            }
+
+            /* Modal de historial: items en columna */
+            .history-item {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            /* Toast en la parte superior en móvil para mejor visibilidad */
+            #toast-container {
+                bottom: auto;
+                top: 0.75rem;
+                right: 0.75rem;
+                left: 0.75rem;
+                max-width: 100%;
+                width: auto;
+            }
+
+            /* Inputs de agregar pedido manual más grandes para touch */
+            .table-card input,
+            .table-card select,
+            .table-card button {
+                min-height: 36px;
+            }
+
+            /* Botón Liberar Mesa */
+            .clear-btn {
+                padding: 0.75rem;
+                font-size: 0.95rem;
+            }
+
+            /* Login box */
+            .login-box {
+                width: 90%;
+                padding: 1.5rem;
+            }
+        }
+
+        @media (min-width: 601px) and (max-width: 900px) {
+            body {
+                padding: 1.25rem;
+            }
+
+            .admin-btn-group {
+                gap: 8px;
+            }
+
+            .admin-btn-group .btn-header {
+                font-size: 0.82rem;
+                padding: 0.5rem 0.75rem;
+                min-width: 110px;
+            }
+
+            .orders-grid {
+                grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            }
+        }
     </style>
 </head>
 
@@ -524,17 +661,16 @@
             <strong style="font-size: 1.2rem;">💰 Ventas del Día: </strong>
             <span id="daily-total" style="font-size: 1.5rem; color: #00ff00; font-weight: bold;">$0</span>
         </div>
-        <div style="margin-top: 1rem;">
+        <div class="admin-btn-group">
             <button class="btn-header btn-create-table" onclick="createManualTable()">➕ Crear Mesa/Orden</button>
             <button class="btn-header" onclick="requestHistory()">📜 Ver Historial</button>
             <a href="inventory.html" class="btn-header" style="text-decoration: none;">📦 Inventario</a>
             <button class="btn-header btn-expenses" onclick="openExpenses()">💸 Gastos del Día</button>
-            <button class="btn-header btn-close-day" onclick="closeDay()">✅ Cerrar Día y Enviar a WhatsApp</button>
+            <button class="btn-header btn-close-day" onclick="closeDay()">✅ Cerrar Día</button>
         </div>
-        <div style="margin-top: 0.8rem;">
+        <div class="admin-stats-row" style="margin-top: 0.8rem;">
             <span style="font-size:0.9rem; color:#ccc;">📉 Gastos: <strong id="daily-expenses-display"
                     style="color:#ff6633;">$0</strong></span>
-            &nbsp;&nbsp;
             <span style="font-size:0.9rem; color:#ccc;">💵 Ganancia Neta: <strong id="net-profit-display"
                     style="color:#00ffcc;">$0</strong></span>
         </div>
