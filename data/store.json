@@ -1,6 +1,6 @@
 {
   "activeOrders": {},
-  "dailyTotal": 0,
+  "dailyTotal": 45000,
   "history": [
     {
       "id": "1771291310426",
@@ -132,14 +132,110 @@
           "timestamp": "2026-02-18T04:30:32.607Z"
         }
       ]
+    },
+    {
+      "id": "1771485611849",
+      "tableId": "1",
+      "total": 5000,
+      "itemsCount": 1,
+      "timestamp": "2026-02-19T07:20:11.849Z",
+      "detailedOrders": [
+        {
+          "items": [
+            {
+              "name": "Pilsen (Botella)",
+              "price": 5000,
+              "quantity": 1
+            }
+          ],
+          "total": 5000,
+          "notes": "",
+          "timestamp": "2026-02-19T07:18:23.484Z"
+        }
+      ]
+    },
+    {
+      "id": "1771485613181",
+      "tableId": "Juan",
+      "total": 7000,
+      "itemsCount": 1,
+      "timestamp": "2026-02-19T07:20:13.181Z",
+      "detailedOrders": [
+        {
+          "items": [
+            {
+              "name": "(Manual) Club Colombia (Latón)",
+              "price": 7000,
+              "quantity": 1
+            }
+          ],
+          "total": 7000,
+          "notes": "",
+          "timestamp": "2026-02-19T07:18:47.847Z"
+        }
+      ]
+    },
+    {
+      "id": "1771486984738",
+      "tableId": "s",
+      "total": 28000,
+      "itemsCount": 2,
+      "timestamp": "2026-02-19T07:43:04.738Z",
+      "detailedOrders": [
+        {
+          "items": [
+            {
+              "name": "(Manual) Club Colombia (Latón)",
+              "price": 7000,
+              "quantity": 3
+            }
+          ],
+          "total": 21000,
+          "notes": "",
+          "timestamp": "2026-02-19T07:24:35.474Z"
+        },
+        {
+          "items": [
+            {
+              "name": "(Manual) Club Colombia (Latón)",
+              "price": 7000,
+              "quantity": 1
+            }
+          ],
+          "total": 7000,
+          "notes": "",
+          "timestamp": "2026-02-19T07:39:13.500Z"
+        }
+      ]
+    },
+    {
+      "id": "1771487527766",
+      "tableId": "s",
+      "total": 5000,
+      "itemsCount": 1,
+      "timestamp": "2026-02-19T07:52:07.766Z",
+      "detailedOrders": [
+        {
+          "items": [
+            {
+              "name": "(Manual) Pilsen (Botella)",
+              "price": 5000,
+              "quantity": 1
+            }
+          ],
+          "total": 5000,
+          "notes": "",
+          "timestamp": "2026-02-19T07:43:19.445Z"
+        }
+      ]
     }
   ],
   "inventory": {
-    "Pilsen": 50,
+    "Pilsen": 48,
     "Poker": 50,
     "Aguila": 50,
     "Light": 50,
-    "Club Colombia": 47,
+    "Club Colombia": 42,
     "Corona": 50,
     "3 Cordilleras": 20,
     "BBC": 50,
@@ -225,5 +321,7 @@
     "Jack Daniels No. 7 (Trago)": 50,
     "Jägermeister (Trago)": 50,
     "Cigarrillo (Unidad)": 50
-  }
+  },
+  "expenses": [],
+  "dailyExpenses": 0
 }

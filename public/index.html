@@ -454,21 +454,43 @@
         <!-- CART UI (Hidden by default) -->
         <div id="cart-overlay" class="cart-overlay" style="display: none;">
             <div class="cart-modal">
-                <div class="cart-header">
-                    <h2>Tu Pedido <span id="table-display"></span></h2>
-                    <button id="close-cart" class="close-btn">&times;</button>
-                </div>
-                <div id="cart-items" class="cart-items">
-                    <!-- Items will be injected here -->
-                    <p class="empty-msg">Tu carrito está vacío</p>
-                </div>
-                <div class="cart-footer">
-                    <div class="total-row">
-                        <span>Total:</span>
-                        <span id="cart-total">$0</span>
+
+                <!-- VISTA NORMAL DEL CARRITO -->
+                <div id="cart-view">
+                    <div class="cart-header">
+                        <h2>Tu Pedido <span id="table-display"></span></h2>
+                        <button id="close-cart" class="close-btn">&times;</button>
                     </div>
-                    <button id="submit-order" class="submit-btn" onclick="submitOrder()">Realizar Pedido</button>
+                    <div id="cart-items" class="cart-items">
+                        <p class="empty-msg">Tu carrito está vacío</p>
+                    </div>
+                    <div class="cart-footer">
+                        <!-- Campo de notas -->
+                        <div class="notes-section">
+                            <label for="order-notes">📝 Notas para cocina (opcional):</label>
+                            <textarea id="order-notes" class="order-notes-input"
+                                placeholder="Ej: sin limón, bien frío, poco hielo..."></textarea>
+                        </div>
+                        <div class="total-row">
+                            <span>Total:</span>
+                            <span id="cart-total">$0</span>
+                        </div>
+                        <button id="submit-order" class="submit-btn" onclick="submitOrder()">Realizar Pedido 🚀</button>
+                    </div>
                 </div>
+
+                <!-- VISTA DE CONFIRMACIÓN (oculta por defecto) -->
+                <div id="confirm-view" class="confirm-view" style="display:none;">
+                    <div class="confirm-icon">🎉</div>
+                    <h2 class="confirm-title">¡Pedido enviado!</h2>
+                    <p class="confirm-subtitle">Tu pedido fue recibido en cocina.<br>Pronto te lo llevamos a la mesa.
+                    </p>
+                    <div id="confirm-items-summary" class="confirm-summary"></div>
+                    <button class="submit-btn" onclick="closeConfirmView()" style="margin-top: 1.5rem;">
+                        ✅ Entendido
+                    </button>
+                </div>
+
             </div>
         </div>
 

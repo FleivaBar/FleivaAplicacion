@@ -204,3 +204,150 @@
         transform: translateX(-50%) scale(1);
     }
 }
+
+/* ========================================
+   CAMPO DE NOTAS
+   ======================================== */
+.notes-section {
+    margin-bottom: 1rem;
+}
+
+.notes-section label {
+    display: block;
+    font-size: 0.85rem;
+    color: #bbb;
+    margin-bottom: 0.4rem;
+}
+
+.order-notes-input {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    color: white;
+    padding: 0.6rem 0.8rem;
+    font-size: 0.9rem;
+    resize: none;
+    min-height: 55px;
+    transition: border-color 0.3s;
+    box-sizing: border-box;
+}
+
+.order-notes-input:focus {
+    outline: none;
+    border-color: var(--precio-color);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.order-notes-input::placeholder {
+    color: #666;
+}
+
+/* ========================================
+   PANTALLA DE CONFIRMACIÓN POST-PEDIDO
+   ======================================== */
+.confirm-view {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2.5rem 2rem;
+    text-align: center;
+    min-height: 300px;
+}
+
+.confirm-icon {
+    font-size: 4rem;
+    animation: bounceConfirm 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes bounceConfirm {
+    0% {
+        transform: scale(0);
+    }
+
+    60% {
+        transform: scale(1.2);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.confirm-title {
+    font-size: 1.8rem;
+    color: #00ff99;
+    margin: 0.5rem 0;
+}
+
+.confirm-subtitle {
+    color: #ccc;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.confirm-summary {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 180px;
+    overflow-y: auto;
+}
+
+.confirm-item-tag {
+    background: rgba(0, 255, 153, 0.08);
+    border: 1px solid rgba(0, 255, 153, 0.25);
+    border-radius: 8px;
+    padding: 0.5rem 0.8rem;
+    font-size: 0.88rem;
+    color: #cce;
+    text-align: left;
+}
+
+/* ========================================
+   MODAL DE CONFIRMACIÓN DE PEDIDO
+   ======================================== */
+.order-confirm-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    z-index: 9000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.order-confirm-box {
+    background: linear-gradient(135deg, #1a0025, #200030);
+    border: 2px solid var(--precio-color);
+    border-radius: 20px;
+    padding: 2rem;
+    width: 100%;
+    max-width: 360px;
+    text-align: center;
+    box-shadow: 0 0 40px rgba(235, 0, 235, 0.3);
+    animation: slideIn 0.3s ease-out;
+}
+
+/* ========================================
+   TOAST ANIMACIÓN (cliente)
+   ======================================== */
+@keyframes toastClientIn {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}

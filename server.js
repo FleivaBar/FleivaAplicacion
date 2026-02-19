@@ -157,7 +157,7 @@ io.on('connection', (socket) => {
 
     // NUEVO PEDIDO
     socket.on('place_order', (data) => {
-        const { tableId, items, total } = data;
+        const { tableId, items, total, notes } = data;
 
         // --- LOGICA DE INVENTARIO ---
         // Descontar stock
@@ -181,6 +181,7 @@ io.on('connection', (socket) => {
         const newOrder = {
             items,
             total,
+            notes: notes || '',
             timestamp: new Date()
         };
 
@@ -194,14 +195,15 @@ io.on('connection', (socket) => {
             tableId,
             items,
             total,
+            notes: notes || '',
             timestamp: newOrder.timestamp
         });
 
+        // Confirmar al cliente que el pedido fue recibido
+        socket.emit('order_confirmed', { tableId });
+
         // También enviamos actualización de inventario al admin si está conectado
         io.to('admin_room').emit('inventory_data', store.inventory);
-
-        // Confirmar al cliente
-        socket.emit('order_confirmed', { success: true, message: '¡Pedido recibido en cocina!' });
     });
 
     // LIBERAR MESA (Cobrar)
@@ -325,6 +327,75 @@ io.on('connection', (socket) => {
             io.to('admin_room').emit('table_created', tableId);
             console.log(`Mesa manual creada: ${tableId}`);
         }
+    });
+
+    // MODIFICAR UN PEDIDO (Admin) - restaura inventario de items viejos y descuenta los nuevos
+    socket.on('update_order', (data) => {
+        const { tableId, orderIndex, items, total, notes } = data;
+        const orders = store.activeOrders[tableId];
+        if (!orders || orderIndex < 0 || orderIndex >= orders.length) return;
+
+        const oldOrder = orders[orderIndex];
+        // Restaurar inventario de los items que se quitan
+        (oldOrder.items || []).forEach(item => {
+            const stockKey = Object.keys(store.inventory).find(key => item.name.includes(key));
+            if (stockKey) {
+                store.inventory[stockKey] = (store.inventory[stockKey] || 0) + item.quantity;
+            }
+        });
+        // Descontar inventario de los items nuevos
+        (items || []).forEach(item => {
+            const stockKey = Object.keys(store.inventory).find(key => item.name.includes(key));
+            if (stockKey) {
+                store.inventory[stockKey] = Math.max(0, (store.inventory[stockKey] || 0) - item.quantity);
+            }
+        });
+
+        orders[orderIndex] = {
+            items: items || [],
+            total: total || 0,
+            notes: notes || '',
+            timestamp: oldOrder.timestamp || new Date()
+        };
+        const grandTotal = orders.reduce((sum, o) => sum + (o.total || 0), 0);
+        saveData();
+
+        io.to('admin_room').emit('table_orders_updated', {
+            tableId,
+            orders: store.activeOrders[tableId],
+            grandTotal
+        });
+        io.to('admin_room').emit('inventory_data', store.inventory);
+        console.log(`Pedido modificado: Mesa ${tableId}, pedido #${orderIndex + 1}`);
+    });
+
+    // ELIMINAR UN PEDIDO DE UNA MESA (Admin) - restaura inventario
+    socket.on('remove_order', (data) => {
+        const { tableId, orderIndex } = data;
+        const orders = store.activeOrders[tableId];
+        if (!orders || orderIndex < 0 || orderIndex >= orders.length) return;
+
+        const removed = orders[orderIndex];
+        (removed.items || []).forEach(item => {
+            const stockKey = Object.keys(store.inventory).find(key => item.name.includes(key));
+            if (stockKey) {
+                store.inventory[stockKey] = (store.inventory[stockKey] || 0) + item.quantity;
+            }
+        });
+        orders.splice(orderIndex, 1);
+        if (orders.length === 0) {
+            delete store.activeOrders[tableId];
+        }
+        const grandTotal = orders.length ? orders.reduce((sum, o) => sum + (o.total || 0), 0) : 0;
+        saveData();
+
+        io.to('admin_room').emit('table_orders_updated', {
+            tableId,
+            orders: orders.length ? store.activeOrders[tableId] : [],
+            grandTotal
+        });
+        io.to('admin_room').emit('inventory_data', store.inventory);
+        console.log(`Pedido eliminado: Mesa ${tableId}, pedido #${orderIndex + 1}`);
     });
 
     socket.on('disconnect', () => {

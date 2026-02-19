@@ -64,7 +64,22 @@
             border-radius: 8px;
             margin-bottom: 1.5rem;
             display: none;
-            /* Oculto por defecto */
+        }
+
+        .toast-msg {
+            position: fixed;
+            top: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a0025;
+            border: 2px solid #ffaa00;
+            color: #ffd966;
+            padding: 0.75rem 1.25rem;
+            border-radius: 10px;
+            z-index: 9999;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            display: none;
         }
     </style>
 </head>
@@ -77,6 +92,7 @@
         <p>Ajuste de Stock en Tiempo Real</p>
     </header>
 
+    <div id="toast-msg" class="toast-msg" role="alert"></div>
     <div id="low-stock-alert" class="alert-box">
         <strong>⚠️ Atención:</strong> Los siguientes productos tienen stock bajo (menos de 5):
         <ul id="low-stock-list" style="margin-top: 5px; padding-left: 20px;"></ul>
@@ -137,10 +153,17 @@
             }
         });
 
+        function showToast(message) {
+            const el = document.getElementById('toast-msg');
+            el.textContent = message;
+            el.style.display = 'block';
+            setTimeout(() => { el.style.display = 'none'; }, 3000);
+        }
+
         function updateStock(productName, inputElement) {
             let newStock = parseInt(inputElement.value);
             if (isNaN(newStock) || newStock < 0) {
-                alert("Por favor ingresa una cantidad válida");
+                showToast("Por favor ingresa una cantidad válida");
                 return;
             }
 

@@ -13,7 +13,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 2. Scroll/Nav Hide Logic (REMOVED - Nav deleted)
     const fabButton = document.querySelector('.fab-whatsapp-float');
-    // const navBar = document.querySelector('nav'); // NavBar removida por el usuario
     const reservasSection = document.querySelector('#reservas');
 
     if (reservasSection) {
@@ -21,10 +20,8 @@ document.addEventListener('DOMContentLoaded', () => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     if (fabButton) fabButton.classList.add('fab-hidden');
-                    // if (navBar) navBar.style.transform = 'translateY(100%)'; 
                 } else {
                     if (fabButton) fabButton.classList.remove('fab-hidden');
-                    // if (navBar) navBar.style.transform = 'translateY(0)';
                 }
             });
         }, { threshold: 0.1 });
@@ -32,21 +29,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // 3. ORDERING APP LOGIC
-    // Detectar mesa: soporta /mesa/1 (QR) y ?table=X (manual desde admin)
     const parts = window.location.pathname.split('/');
     const urlParams = new URLSearchParams(window.location.search);
 
     let tableId = null;
     if (parts.length > 2 && parts[1] === 'mesa') {
-        // Ruta tipo: /mesa/1
         tableId = decodeURIComponent(parts[2]);
     } else if (urlParams.has('table')) {
-        // Query param tipo: ?table=Andrea
         tableId = urlParams.get('table');
     }
 
     if (tableId) {
-        console.log(`Modo Pedido Activado: Mesa ${tableId}`);
         initOrderingSystem(tableId);
     }
 });
@@ -81,7 +74,6 @@ function initOrderingSystem(tableId) {
 
     socket.emit('join_table', tableId);
 
-    // Mostrar ID de mesa en el modal
     const tableDisplay = document.getElementById('table-display');
     if (tableDisplay) tableDisplay.textContent = `(Mesa ${tableId})`;
 
@@ -91,19 +83,15 @@ function initOrderingSystem(tableId) {
         const title = article.querySelector('h3')?.innerText;
         const priceText = article.querySelector('.precio')?.innerText;
 
-        // Priorizar data-name si existe (para diferenciar Botella/Lata/Trago)
         let fullName = article.getAttribute('data-name');
 
         if (!fullName) {
-            // Fallback: Combinamos categoría y nombre
             const section = article.closest('section');
             const category = section ? section.querySelector('h2')?.innerText : '';
             fullName = category ? `${category} - ${title}` : title;
         }
 
-        // Solo agregar botón si hay precio válido
         if (fullName && priceText && priceText.trim() !== '$') {
-            // Limpiar botones previos si existen (evita duplicados si se llama init varias veces)
             const existingBtn = article.querySelector('.add-to-cart-btn');
             if (existingBtn) existingBtn.remove();
 
@@ -111,11 +99,8 @@ function initOrderingSystem(tableId) {
             btn.className = 'add-to-cart-btn';
             btn.innerText = 'Agregar';
 
-            // Usamos una función anónima para capturar los valores actuales
             btn.onclick = function () {
                 addToCart(fullName, priceText);
-
-                // Feedback visual botón
                 const originalText = this.innerText;
                 this.innerText = '✔';
                 this.style.background = '#28a745';
@@ -136,7 +121,7 @@ function initOrderingSystem(tableId) {
     const submitBtn = document.getElementById('submit-order');
 
     if (viewCartBtn) {
-        viewCartBtn.style.display = 'flex'; // Mostrar botón
+        viewCartBtn.style.display = 'flex';
         viewCartBtn.onclick = () => {
             cartOverlay.style.display = 'flex';
             renderCart();
@@ -146,31 +131,28 @@ function initOrderingSystem(tableId) {
     if (closeCartBtn) {
         closeCartBtn.onclick = () => {
             cartOverlay.style.display = 'none';
-        }
+        };
     }
 
-    // Cerrar al hacer click fuera del modal
     if (cartOverlay) {
         cartOverlay.onclick = (e) => {
             if (e.target === cartOverlay) cartOverlay.style.display = 'none';
-        }
+        };
     }
 
     if (submitBtn) {
         submitBtn.onclick = submitOrder;
     }
 
-    // Socket Listeners
+    // Cuando el servidor confirma el pedido → mostrar pantalla de éxito
     socket.on('order_confirmed', (data) => {
-        alert(data.message);
-        cart = []; // Limpiar carrito local
+        showConfirmView();
+        cart = [];
         updateCartCount();
-        cartOverlay.style.display = 'none';
     });
 }
 
 function addToCart(name, priceStr) {
-    // Parsear precio: "$5.000" -> 5000
     const price = parseInt(priceStr.replace(/\D/g, ''));
 
     const existingItem = cart.find(item => item.name === name);
@@ -180,10 +162,7 @@ function addToCart(name, priceStr) {
         cart.push({ name, price, quantity: 1 });
     }
 
-    // Animación visual de feedback
     updateCartCount();
-
-    // Opcional: Mostrar una pequeña notificación toast
 }
 
 function removeFromCart(index) {
@@ -197,7 +176,6 @@ function updateCartCount() {
     const badge = document.getElementById('cart-count');
     if (badge) {
         badge.innerText = count;
-        // Animación de rebote
         badge.style.transform = 'scale(1.5)';
         setTimeout(() => badge.style.transform = 'scale(1)', 200);
     }
@@ -220,17 +198,16 @@ function renderCart() {
 
             const row = document.createElement('div');
             row.className = 'cart-item-row';
-            row.style.cssText = 'display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; background: rgba(255,255,255,0.05); padding: 0.8rem; border-radius: 10px;';
 
             row.innerHTML = `
-                <div style="flex: 1;">
-                    <h4 style="margin: 0; color: white;">${item.name}</h4>
-                    <span style="font-size: 0.9rem; color: #ccc;">$${item.price.toLocaleString()} x ${item.quantity}</span>
+                <div class="item-info">
+                    <h4>${item.name}</h4>
+                    <span>$${item.price.toLocaleString()} x ${item.quantity}</span>
                 </div>
-                <div style="display: flex; align-items: center; gap: 0.5rem;">
-                    <button onclick="changeQty(${index}, -1)" style="background: #6c0097; color: white; border: none; width: 25px; height: 25px; border-radius: 50%; cursor: pointer;">-</button>
+                <div class="item-controls">
+                    <button class="qty-btn" onclick="changeQty(${index}, -1)">-</button>
                     <span>${item.quantity}</span>
-                    <button onclick="changeQty(${index}, 1)" style="background: #6c0097; color: white; border: none; width: 25px; height: 25px; border-radius: 50%; cursor: pointer;">+</button>
+                    <button class="qty-btn" onclick="changeQty(${index}, 1)">+</button>
                 </div>
             `;
             container.appendChild(row);
@@ -252,31 +229,142 @@ function changeQty(index, delta) {
 }
 
 function submitOrder() {
-    console.log('Intentando enviar pedido...', cart);
-
-    if (cart.length === 0) return alert('El carrito está vacío');
+    if (cart.length === 0) {
+        showClientToast('El carrito está vacío 🛒', 'warning');
+        return;
+    }
 
     if (!socket) {
-        alert('Error: No hay conexión con el servidor. Recarga la página.');
+        showClientToast('Sin conexión con el servidor. Recarga la página.', 'error');
         return;
     }
 
-    // Verificar si hay una mesa asignada
     if (!currentTableId) {
-        alert('Error: No se ha detectado el número de mesa. Escanea el código QR nuevamente.');
+        showClientToast('No se detectó la mesa. Escanea el QR nuevamente.', 'error');
         return;
     }
 
-    if (confirm('¿Confirmar pedido?')) {
-        const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    // Mostrar modal de confirmación en vez de confirm()
+    showOrderConfirmModal();
+}
 
-        socket.emit('place_order', {
-            tableId: currentTableId,
-            items: cart,
-            total: total
-        });
-        console.log('Pedido enviado al servidor');
+// --- MODAL DE CONFIRMACIÓN DE PEDIDO (en vez de confirm()) ---
+function showOrderConfirmModal() {
+    // Crear overlay de confirmación si no existe
+    let overlay = document.getElementById('order-confirm-modal');
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'order-confirm-modal';
+        overlay.className = 'order-confirm-overlay';
+        overlay.innerHTML = `
+            <div class="order-confirm-box">
+                <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">📋</div>
+                <h3 style="margin: 0 0 0.5rem; color: var(--precio-color);">¿Confirmar pedido?</h3>
+                <p style="color: #ccc; font-size: 0.9rem; margin-bottom: 1.5rem;">Se enviará a cocina y no podrás editarlo.</p>
+                <div style="display: flex; gap: 10px; justify-content: center;">
+                    <button id="confirm-yes-btn" class="submit-btn" style="flex:1; padding: 0.75rem;">Sí, enviar 🚀</button>
+                    <button id="confirm-no-btn" class="submit-btn" style="flex:1; padding: 0.75rem; background: #444;">Cancelar</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+
+        document.getElementById('confirm-yes-btn').onclick = () => {
+            overlay.style.display = 'none';
+            doPlaceOrder();
+        };
+        document.getElementById('confirm-no-btn').onclick = () => {
+            overlay.style.display = 'none';
+        };
+        overlay.onclick = (e) => {
+            if (e.target === overlay) overlay.style.display = 'none';
+        };
     }
+
+    overlay.style.display = 'flex';
+}
+
+function doPlaceOrder() {
+    const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const notes = document.getElementById('order-notes')?.value.trim() || '';
+
+    socket.emit('place_order', {
+        tableId: currentTableId,
+        items: cart,
+        total: total,
+        notes: notes
+    });
+}
+
+// --- PANTALLA DE CONFIRMACIÓN POST-PEDIDO ---
+function showConfirmView() {
+    const cartView = document.getElementById('cart-view');
+    const confirmView = document.getElementById('confirm-view');
+    const summary = document.getElementById('confirm-items-summary');
+
+    // Generar resumen de items pedidos
+    if (summary && cart.length > 0) {
+        summary.innerHTML = cart.map(item =>
+            `<div class="confirm-item-tag">${item.quantity}x ${item.name} — $${(item.price * item.quantity).toLocaleString()}</div>`
+        ).join('');
+    }
+
+    if (cartView) cartView.style.display = 'none';
+    if (confirmView) confirmView.style.display = 'flex';
+
+    // Limpiar notas
+    const notesEl = document.getElementById('order-notes');
+    if (notesEl) notesEl.value = '';
+}
+
+function closeConfirmView() {
+    const cartView = document.getElementById('cart-view');
+    const confirmView = document.getElementById('confirm-view');
+    const overlay = document.getElementById('cart-overlay');
+
+    if (cartView) cartView.style.display = 'block';
+    if (confirmView) confirmView.style.display = 'none';
+    if (overlay) overlay.style.display = 'none';
+
+    renderCart();
+}
+
+// --- TOAST CLIENTE (en vez de alert) ---
+function showClientToast(message, type = 'info') {
+    const existing = document.getElementById('client-toast');
+    if (existing) existing.remove();
+
+    const toast = document.createElement('div');
+    toast.id = 'client-toast';
+    toast.className = 'client-toast';
+
+    const colors = {
+        warning: '#ff9900',
+        error: '#ff4444',
+        info: 'var(--precio-color)'
+    };
+
+    toast.style.cssText = `
+        position: fixed;
+        top: 1.5rem;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #1a0025;
+        border: 2px solid ${colors[type] || colors.info};
+        border-radius: 12px;
+        padding: 0.9rem 1.5rem;
+        color: white;
+        font-size: 0.95rem;
+        z-index: 9999;
+        text-align: center;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        animation: toastClientIn 0.3s ease;
+        max-width: 85vw;
+    `;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+
+    setTimeout(() => toast.remove(), 3000);
 }
 
 // Exponer funciones al scope global para los onclick inline
@@ -284,3 +372,4 @@ window.addToCart = addToCart;
 window.changeQty = changeQty;
 window.removeFromCart = removeFromCart;
 window.submitOrder = submitOrder;
+window.closeConfirmView = closeConfirmView;

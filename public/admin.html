@@ -22,60 +22,308 @@
 
         .orders-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 1.5rem;
         }
 
         .table-card {
-            background: rgba(20, 0, 30, 0.9);
-            border: 1px solid var(--precio-color);
-            border-radius: 15px;
-            padding: 1.5rem;
-            box-shadow: 0 0 15px rgba(235, 0, 235, 0.2);
+            background: linear-gradient(160deg, rgba(28, 5, 40, 0.98) 0%, rgba(18, 0, 28, 0.98) 100%);
+            border: 1px solid rgba(235, 0, 235, 0.35);
+            border-radius: 16px;
+            padding: 0;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.03);
             position: relative;
+            transition: border-color 0.25s, box-shadow 0.25s;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
 
-        .table-header {
+        .table-card:hover {
+            border-color: rgba(235, 0, 235, 0.5);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 20px rgba(235, 0, 235, 0.15);
+        }
+
+        .table-card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem 1.25rem;
+            background: rgba(235, 0, 235, 0.12);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         }
 
-        .table-total {
-            font-size: 1.5rem;
-            color: var(--precio-color);
-            font-weight: bold;
-            text-align: right;
-            margin-top: 1rem;
+        .table-card-header h2 {
+            margin: 0;
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: 0.02em;
+        }
+
+        .table-card-badge {
+            background: rgba(235, 0, 235, 0.4);
+            color: #fff;
+            padding: 0.35rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .table-card-body {
+            padding: 1rem 1.25rem;
+            flex: 1;
+            min-height: 0;
+        }
+
+        .table-card-orders {
+            max-height: 280px;
+            overflow-y: auto;
+            margin: 0 -0.25rem;
+            padding: 0 0.25rem;
+        }
+
+        .table-card-orders::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .table-card-orders::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+        }
+
+        .table-card-orders::-webkit-scrollbar-thumb {
+            background: rgba(235, 0, 235, 0.3);
+            border-radius: 3px;
+        }
+
+        .order-block {
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 12px;
+            padding: 0.85rem 1rem;
+            margin-bottom: 0.85rem;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .order-block:last-child {
+            margin-bottom: 0;
+        }
+
+        .order-block-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 0.6rem;
+        }
+
+        .order-block-time {
+            font-size: 0.8rem;
+            color: #aaa;
+            font-weight: 500;
+        }
+
+        .order-block-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-order-edit,
+        .btn-order-remove {
+            border: none;
+            border-radius: 10px;
+            padding: 0.45rem 0.75rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.15s, opacity 0.15s;
+            min-height: 36px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.25rem;
+        }
+
+        .btn-order-edit {
+            background: rgba(255, 200, 80, 0.2);
+            color: #ffd966;
+            border: 1px solid rgba(255, 200, 80, 0.4);
+        }
+
+        .btn-order-edit:hover,
+        .btn-order-edit:active {
+            background: rgba(255, 200, 80, 0.35);
+            transform: scale(1.02);
+        }
+
+        .btn-order-remove {
+            background: rgba(255, 80, 80, 0.2);
+            color: #ff8888;
+            border: 1px solid rgba(255, 80, 80, 0.4);
+        }
+
+        .btn-order-remove:hover,
+        .btn-order-remove:active {
+            background: rgba(255, 80, 80, 0.35);
+            transform: scale(1.02);
         }
 
         .order-item {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 0.5rem;
-            font-size: 0.9rem;
-            border-bottom: 1px dotted rgba(255, 255, 255, 0.2);
-            padding-bottom: 2px;
+            align-items: center;
+            padding: 0.4rem 0;
+            font-size: 0.95rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            line-height: 1.4;
+        }
+
+        .order-item:last-child {
+            border-bottom: none;
+        }
+
+        .order-item-name {
+            flex: 1;
+            margin-right: 0.75rem;
+        }
+
+        .order-item-price {
+            color: var(--precio-color);
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        /* Notas del pedido */
+        .order-notes-display {
+            font-size: 0.8rem;
+            color: #ffcc66;
+            background: rgba(255, 200, 0, 0.08);
+            border-left: 3px solid #ffcc00;
+            padding: 0.4rem 0.6rem;
+            border-radius: 6px;
+            margin-top: 0.5rem;
+            font-style: italic;
+        }
+
+        .table-card-total-bar {
+            margin-top: 1rem;
+            padding: 1rem 1.25rem;
+            background: rgba(235, 0, 235, 0.15);
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 0 0 16px 16px;
+        }
+
+        .table-card-total {
+            font-size: 1.5rem;
+            color: #00ff88;
+            font-weight: 700;
+            text-align: right;
+            letter-spacing: 0.02em;
+        }
+
+        .table-card-add-section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px dashed rgba(255, 255, 255, 0.12);
+            border-radius: 12px;
+            padding: 1rem 1.25rem;
+            margin: 1rem 1.25rem;
+            margin-bottom: 0;
+        }
+
+        .table-card-add-section .section-label {
+            font-size: 0.85rem;
+            color: #bbb;
+            margin-bottom: 0.6rem;
+            font-weight: 500;
+        }
+
+        .table-card-add-section select {
+            width: 100%;
+            padding: 0.65rem 0.85rem;
+            margin-bottom: 0.6rem;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(0, 0, 0, 0.25);
+            color: #fff;
+            font-size: 0.95rem;
+        }
+
+        .table-card-add-section .add-row {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .table-card-add-section .add-row input[type="text"] {
+            flex: 1;
+            min-width: 0;
+            padding: 0.65rem 0.85rem;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(0, 0, 0, 0.25);
+            color: #fff;
+            font-size: 0.95rem;
+        }
+
+        .table-card-add-section .add-row input[type="number"] {
+            width: 5rem;
+            padding: 0.65rem;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(0, 0, 0, 0.25);
+            color: #fff;
+            font-size: 0.95rem;
+            text-align: center;
+        }
+
+        .table-card-add-section .btn-add-item {
+            flex-shrink: 0;
+            width: 44px;
+            height: 44px;
+            min-width: 44px;
+            min-height: 44px;
+            border-radius: 12px;
+            border: none;
+            background: linear-gradient(135deg, var(--precio-color), #b000c0);
+            color: white;
+            font-size: 1.25rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .table-card-add-section .btn-add-item:hover,
+        .table-card-add-section .btn-add-item:active {
+            transform: scale(1.05);
+            box-shadow: 0 0 16px rgba(235, 0, 235, 0.4);
         }
 
         .clear-btn {
-            background: linear-gradient(45deg, #ff0055, #ff00aa);
+            margin: 1rem 1.25rem 1.25rem;
+            background: linear-gradient(135deg, #ff0055, #cc0088);
             border: none;
             color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
+            padding: 0.85rem 1.25rem;
+            border-radius: 14px;
             cursor: pointer;
-            font-weight: bold;
-            margin-top: 1rem;
-            width: 100%;
-            transition: transform 0.2s;
+            font-weight: 700;
+            font-size: 1rem;
+            width: calc(100% - 2.5rem);
+            margin-left: 1.25rem;
+            margin-right: 1.25rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            min-height: 48px;
+            box-shadow: 0 4px 16px rgba(255, 0, 85, 0.3);
         }
 
-        .clear-btn:hover {
-            transform: scale(1.05);
+        .clear-btn:hover,
+        .clear-btn:active {
+            transform: scale(1.02);
+            box-shadow: 0 6px 20px rgba(255, 0, 85, 0.4);
         }
 
         .badge {
@@ -439,6 +687,501 @@
             margin-top: 1rem;
         }
 
+        /* --- MODAL ADMIN (liberar mesa / crear mesa) --- */
+        .admin-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(4px);
+            z-index: 8000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .admin-modal-box {
+            background: linear-gradient(135deg, #1a0025, #200030);
+            border: 2px solid var(--precio-color);
+            border-radius: 18px;
+            padding: 2rem;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 0 40px rgba(235, 0, 235, 0.3);
+            animation: slideInModal 0.3s ease-out;
+        }
+
+        .admin-modal-box h3 {
+            margin: 0 0 0.5rem;
+            color: var(--precio-color);
+            font-size: 1.4rem;
+        }
+
+        .admin-modal-box p {
+            color: #ccc;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .admin-modal-input {
+            width: 100%;
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: white;
+            font-size: 1rem;
+            margin-bottom: 1.2rem;
+            box-sizing: border-box;
+        }
+
+        .admin-modal-input:focus {
+            outline: none;
+            border-color: var(--precio-color);
+        }
+
+        .admin-modal-btns {
+            display: flex;
+            gap: 10px;
+        }
+
+        .admin-modal-btns button {
+            flex: 1;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.95rem;
+            transition: transform 0.2s;
+        }
+
+        .admin-modal-btns button:hover {
+            transform: scale(1.03);
+        }
+
+        .btn-modal-confirm {
+            background: linear-gradient(45deg, #ff0055, #ff00aa);
+            color: white;
+        }
+
+        .btn-modal-cancel {
+            background: #333;
+            color: white;
+        }
+
+        /* ========== Modal Modificar Pedido ========== */
+        .edit-order-modal {
+            max-width: 520px;
+            width: 95%;
+            max-height: 90vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+        }
+
+        .edit-order-modal .admin-modal-box {
+            max-width: none;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            max-height: 90vh;
+        }
+
+        .edit-order-header {
+            padding: 1.25rem 1.5rem;
+            background: rgba(255, 200, 80, 0.12);
+            border-bottom: 1px solid rgba(255, 200, 80, 0.25);
+            position: relative;
+        }
+
+        .edit-order-header .edit-order-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            border-radius: 10px;
+            font-size: 1.25rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .edit-order-header .edit-order-close:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .edit-order-header h3 {
+            margin: 0 0 0.25rem;
+            font-size: 1.35rem;
+            color: #ffd966;
+        }
+
+        .edit-order-subtitle {
+            font-size: 0.9rem;
+            color: #aaa;
+            margin: 0;
+        }
+
+        .edit-order-body {
+            padding: 1.25rem 1.5rem;
+            overflow-y: auto;
+            flex: 1;
+            min-height: 0;
+        }
+
+        .edit-order-section {
+            margin-bottom: 1.25rem;
+        }
+
+        .edit-order-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .edit-order-section-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #bbb;
+            margin-bottom: 0.6rem;
+            display: block;
+        }
+
+        .edit-order-modal .edit-items-list {
+            max-height: 220px;
+            overflow-y: auto;
+            margin: 0 -0.25rem;
+            padding: 0 0.25rem;
+        }
+
+        .edit-order-modal .edit-items-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .edit-order-modal .edit-items-list::-webkit-scrollbar-thumb {
+            background: rgba(255, 200, 80, 0.3);
+            border-radius: 3px;
+        }
+
+        .edit-order-item {
+            display: grid;
+            grid-template-columns: 1fr auto auto auto auto;
+            gap: 0.75rem;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            margin-bottom: 0.5rem;
+        }
+
+        .edit-order-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .edit-order-item-name {
+            font-size: 0.95rem;
+            color: #fff;
+            word-break: break-word;
+        }
+
+        .edit-order-item-qty {
+            width: 56px;
+            padding: 0.5rem;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .edit-order-item-price-tag {
+            font-size: 0.85rem;
+            color: #aaa;
+            white-space: nowrap;
+        }
+
+        .edit-order-item-subtotal {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #00ff88;
+            white-space: nowrap;
+        }
+
+        .btn-remove-item {
+            width: 40px;
+            height: 40px;
+            min-width: 40px;
+            min-height: 40px;
+            border: none;
+            background: rgba(255, 80, 80, 0.25);
+            color: #ff8888;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s, transform 0.15s;
+        }
+
+        .btn-remove-item:hover,
+        .btn-remove-item:active {
+            background: rgba(255, 80, 80, 0.45);
+            transform: scale(1.05);
+        }
+
+        .edit-order-empty-msg {
+            text-align: center;
+            padding: 1.5rem;
+            color: #888;
+            font-size: 0.95rem;
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+            border: 1px dashed rgba(255,255,255,0.1);
+        }
+
+        .edit-order-add-box {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px dashed rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 1rem;
+        }
+
+        .edit-order-add-box select {
+            width: 100%;
+            padding: 0.65rem 0.85rem;
+            margin-bottom: 0.6rem;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(0, 0, 0, 0.25);
+            color: #fff;
+            font-size: 0.95rem;
+        }
+
+        .edit-order-add-row {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .edit-order-add-row input[type="text"] {
+            flex: 1;
+            min-width: 0;
+            padding: 0.65rem 0.85rem;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(0, 0, 0, 0.25);
+            color: #fff;
+            font-size: 0.95rem;
+        }
+
+        .edit-order-add-row input[type="number"] {
+            width: 5.5rem;
+            padding: 0.65rem;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(0, 0, 0, 0.25);
+            color: #fff;
+            font-size: 0.95rem;
+            text-align: center;
+        }
+
+        .edit-order-add-row .btn-add-to-edit {
+            width: 44px;
+            height: 44px;
+            min-width: 44px;
+            min-height: 44px;
+            border-radius: 12px;
+            border: none;
+            background: linear-gradient(135deg, var(--precio-color), #b000c0);
+            color: #fff;
+            font-size: 1.25rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+
+        .edit-order-add-row .btn-add-to-edit:hover,
+        .edit-order-add-row .btn-add-to-edit:active {
+            transform: scale(1.05);
+            box-shadow: 0 0 16px rgba(235, 0, 235, 0.35);
+        }
+
+        .edit-order-notes-wrap label {
+            font-size: 0.85rem;
+            color: #aaa;
+            display: block;
+            margin-bottom: 0.4rem;
+        }
+
+        .edit-order-notes-wrap input {
+            width: 100%;
+            padding: 0.65rem 0.85rem;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(0, 0, 0, 0.2);
+            color: #fff;
+            font-size: 0.95rem;
+            box-sizing: border-box;
+        }
+
+        .edit-order-total-bar {
+            margin-top: 1rem;
+            padding: 1rem 1.25rem;
+            background: rgba(0, 255, 136, 0.12);
+            border: 1px solid rgba(0, 255, 136, 0.25);
+            border-radius: 12px;
+        }
+
+        .edit-order-total {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #00ff88;
+            text-align: right;
+        }
+
+        .edit-order-footer {
+            padding: 1.25rem 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .edit-order-footer .admin-modal-btns {
+            flex: 1;
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .edit-order-footer .btn-modal-confirm {
+            flex: 1;
+            min-height: 48px;
+        }
+
+        .edit-order-footer .btn-modal-cancel {
+            flex: 1;
+            min-height: 48px;
+        }
+
+        @media (max-width: 600px) {
+            .edit-order-item {
+                grid-template-columns: 1fr 1fr;
+                gap: 0.5rem;
+            }
+            .edit-order-item-name {
+                grid-column: 1 / -1;
+            }
+            .edit-order-item-qty {
+                width: 100%;
+                min-height: 44px;
+                font-size: 16px;
+            }
+            .edit-order-add-row input[type="text"],
+            .edit-order-add-row input[type="number"] {
+                min-height: 44px;
+                font-size: 16px;
+            }
+            .edit-order-add-row .btn-add-to-edit {
+                width: 48px;
+                height: 48px;
+                min-width: 48px;
+                min-height: 48px;
+            }
+            .btn-remove-item {
+                width: 44px;
+                height: 44px;
+                min-width: 44px;
+                min-height: 44px;
+            }
+        }
+
+        @keyframes slideInModal {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Filtro de historial (calendario) */
+        .history-filters {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 1.2rem;
+        }
+
+        .history-filters label {
+            font-size: 0.85rem;
+            color: #bbb;
+        }
+
+        .history-filter-date {
+            padding: 0.4rem 0.8rem;
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 20px;
+            color: white;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        .history-filter-date:focus {
+            outline: none;
+            border-color: var(--precio-color);
+        }
+
+        .btn-clear-filter {
+            background: none;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #aaa;
+            padding: 0.35rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: none;
+        }
+
+        .btn-clear-filter:hover {
+            border-color: var(--precio-color);
+            color: white;
+        }
+
+        .history-stats {
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 10px;
+            padding: 0.6rem 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.85rem;
+            color: #ccc;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
         /* --- LOGIN OVERLAY --- */
         #login-overlay {
             position: fixed;
@@ -568,12 +1311,6 @@
                 font-size: 0.85rem;
             }
 
-            /* Grid de mesas: 1 columna */
-            .orders-grid {
-                grid-template-columns: 1fr;
-                gap: 1rem;
-            }
-
             /* Modales a 95% de ancho */
             .history-modal,
             .expenses-modal {
@@ -598,17 +1335,50 @@
                 width: auto;
             }
 
-            /* Inputs de agregar pedido manual más grandes para touch */
-            .table-card input,
-            .table-card select,
-            .table-card button {
-                min-height: 36px;
+            /* Tarjetas a ancho completo y más aire en móvil */
+            .orders-grid {
+                grid-template-columns: 1fr;
+                gap: 1.25rem;
             }
 
-            /* Botón Liberar Mesa */
+            .table-card-header,
+            .table-card-body {
+                padding: 1rem;
+            }
+
+            .table-card-orders {
+                max-height: 240px;
+            }
+
+            .table-card-add-section {
+                margin: 1rem;
+            }
+
+            .table-card-add-section .add-row input[type="text"],
+            .table-card-add-section .add-row input[type="number"] {
+                min-height: 44px;
+                font-size: 16px; /* evita zoom en iOS */
+            }
+
+            .table-card-add-section .btn-add-item {
+                width: 48px;
+                height: 48px;
+                min-width: 48px;
+                min-height: 48px;
+            }
+
+            .btn-order-edit,
+            .btn-order-remove {
+                min-height: 40px;
+                padding: 0.5rem 0.85rem;
+            }
+
             .clear-btn {
-                padding: 0.75rem;
-                font-size: 0.95rem;
+                margin: 1rem;
+                width: calc(100% - 2rem);
+                min-height: 52px;
+                padding: 1rem;
+                font-size: 1.05rem;
             }
 
             /* Login box */
@@ -634,7 +1404,7 @@
             }
 
             .orders-grid {
-                grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+                grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             }
         }
     </style>
@@ -681,6 +1451,87 @@
         <p style="text-align: center; width: 100%; grid-column: 1/-1; opacity: 0.6;">Esperando pedidos...</p>
     </main>
 
+    <!-- Modal liberar mesa -->
+    <div id="clear-table-modal" class="admin-modal-overlay">
+        <div class="admin-modal-box">
+            <div style="font-size:2.5rem;margin-bottom:0.5rem;">🧾</div>
+            <h3>Liberar Mesa</h3>
+            <p id="clear-table-msg">¿Confirmar pago y liberar esta mesa?</p>
+            <div class="admin-modal-btns">
+                <button class="btn-modal-confirm" id="clear-table-yes">✅ Cobrado</button>
+                <button class="btn-modal-cancel" onclick="closeClearModal()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal quitar pedido -->
+    <div id="remove-order-modal" class="admin-modal-overlay" onclick="if(event.target===this) closeRemoveOrderModal()">
+        <div class="admin-modal-box">
+            <div style="font-size:2.5rem;margin-bottom:0.5rem;">🗑️</div>
+            <h3>Quitar pedido</h3>
+            <p id="remove-order-msg">¿Eliminar este pedido? Se devolverá el stock al inventario.</p>
+            <div class="admin-modal-btns">
+                <button class="btn-modal-confirm" id="remove-order-yes">✅ Sí, quitar pedido</button>
+                <button class="btn-modal-cancel" onclick="closeRemoveOrderModal()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal crear mesa -->
+    <div id="create-table-modal" class="admin-modal-overlay">
+        <div class="admin-modal-box">
+            <div style="font-size:2.5rem;margin-bottom:0.5rem;">➕</div>
+            <h3>Nueva Mesa / Orden</h3>
+            <p>Ingresa el nombre de la mesa o cliente:</p>
+            <input type="text" id="new-table-name" class="admin-modal-input" placeholder="Ej: Mesa 5, Juan, Barra 1">
+            <div class="admin-modal-btns">
+                <button class="btn-modal-confirm" onclick="confirmCreateTable()">Crear</button>
+                <button class="btn-modal-cancel" onclick="closeCreateModal()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal modificar pedido -->
+    <div id="edit-order-modal" class="admin-modal-overlay" onclick="if(event.target===this) closeEditOrderModal()">
+        <div class="admin-modal-box edit-order-modal">
+            <div class="edit-order-header">
+                <button type="button" class="edit-order-close" onclick="closeEditOrderModal()" title="Cerrar">&times;</button>
+                <h3>✏️ Modificar pedido</h3>
+                <p id="edit-order-subtitle" class="edit-order-subtitle">Mesa — Pedido #1</p>
+            </div>
+            <div class="edit-order-body">
+                <div class="edit-order-section">
+                    <span class="edit-order-section-label">Productos en el pedido</span>
+                    <div id="edit-order-items" class="edit-items-list"></div>
+                </div>
+                <div class="edit-order-section">
+                    <span class="edit-order-section-label">➕ Agregar producto</span>
+                    <div class="edit-order-add-box">
+                        <select id="edit-order-select" onchange="fillEditOrderInputs(this.value)"></select>
+                        <div class="edit-order-add-row">
+                            <input type="text" id="edit-order-item-name" placeholder="Nombre del producto">
+                            <input type="number" id="edit-order-item-price" placeholder="$" min="0">
+                            <button type="button" class="btn-add-to-edit" onclick="addItemToEditOrder()" title="Agregar">+</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="edit-order-section edit-order-notes-wrap">
+                    <label for="edit-order-notes">Notas (opcional)</label>
+                    <input type="text" id="edit-order-notes" placeholder="Ej: sin hielo, para llevar...">
+                </div>
+                <div class="edit-order-total-bar">
+                    <div class="edit-order-total" id="edit-order-total-display">Total: $0</div>
+                </div>
+            </div>
+            <div class="edit-order-footer">
+                <div class="admin-modal-btns">
+                    <button class="btn-modal-confirm" onclick="saveEditedOrder()">💾 Guardar cambios</button>
+                    <button class="btn-modal-cancel" onclick="closeEditOrderModal()">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- History Modal -->
     <div id="history-overlay" class="history-overlay">
         <div class="history-modal">
@@ -689,6 +1540,18 @@
             <h2
                 style="margin-top: 0; color: var(--morado-claro); border-bottom: 1px solid #555; padding-bottom: 0.5rem;">
                 Historial de Mesas Cerradas</h2>
+            <!-- Filtro por fecha -->
+            <div class="history-filters">
+                <label for="history-date-picker">📅 Filtrar por fecha:</label>
+                <input type="date" id="history-date-picker" class="history-filter-date"
+                    onchange="filterHistory('date', this.value)" title="Selecciona una fecha">
+                <button id="btn-clear-filter" class="btn-clear-filter" onclick="clearHistoryFilter()">✕ Ver
+                    todos</button>
+            </div>
+            <div id="history-stats" class="history-stats" style="display:none;">
+                <span>📋 Mesas ese día: <strong id="stat-count">0</strong></span>
+                <span>💰 Total: <strong id="stat-total" style="color:#00ff66;">$0</strong></span>
+            </div>
             <div id="history-list">Cargando...</div>
         </div>
     </div>
@@ -872,6 +1735,17 @@
             }
         });
 
+        socket.on('table_orders_updated', (data) => {
+            const { tableId, orders, grandTotal } = data;
+            if (!orders || orders.length === 0) {
+                delete tablesData[tableId];
+            } else {
+                tablesData[tableId] = { orders, grandTotal };
+            }
+            closeEditOrderModal();
+            renderAllTables();
+        });
+
         // Variables numéricas para evitar errores de parseo del DOM según el locale
         let currentDailyTotal = 0;
         let currentDailyExpenses = 0;
@@ -928,8 +1802,8 @@
         function addExpense() {
             const desc = document.getElementById('exp-desc').value.trim();
             const amount = parseFloat(document.getElementById('exp-amount').value);
-            if (!desc) return alert('Por favor escribe en qué se gastó el dinero.');
-            if (!amount || amount <= 0) return alert('Ingresa un monto válido mayor a 0.');
+            if (!desc) { showAdminToast('¡Escribe en qué se gastó el dinero!', 'warning'); return; }
+            if (!amount || amount <= 0) { showAdminToast('Ingresa un monto válido mayor a 0.', 'warning'); return; }
 
             socket.emit('add_expense', { description: desc, amount });
 
@@ -937,18 +1811,23 @@
             document.getElementById('exp-amount').value = '';
         }
 
-        // Allow Enter key on expense inputs
+        // Allow Enter key on expense inputs and create table input
         document.addEventListener('DOMContentLoaded', () => {
             ['exp-desc', 'exp-amount'].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.addEventListener('keypress', e => { if (e.key === 'Enter') addExpense(); });
             });
+            const newTableInput = document.getElementById('new-table-name');
+            if (newTableInput) newTableInput.addEventListener('keypress', e => { if (e.key === 'Enter') confirmCreateTable(); });
+            ['edit-order-item-name', 'edit-order-item-price'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.addEventListener('keypress', e => { if (e.key === 'Enter') addItemToEditOrder(); });
+            });
         });
 
+
         function deleteExpense(id) {
-            if (confirm('¿Eliminar este gasto?')) {
-                socket.emit('delete_expense', id);
-            }
+            socket.emit('delete_expense', id);
         }
 
         function renderExpensesList(expenses) {
@@ -984,11 +1863,27 @@
         }
 
         function createManualTable() {
-            const tableName = prompt("Ingresa el nombre de la Mesa o Cliente (ej: Barra 1, Juan Pérez):");
-            if (tableName && tableName.trim() !== "") {
-                // Emitir evento al servidor en lugar de abrir ventana
-                socket.emit('create_table', tableName.trim());
+            const modal = document.getElementById('create-table-modal');
+            const input = document.getElementById('new-table-name');
+            input.value = '';
+            modal.style.display = 'flex';
+            setTimeout(() => input.focus(), 100);
+        }
+
+        function confirmCreateTable() {
+            const input = document.getElementById('new-table-name');
+            const tableName = input.value.trim();
+            if (tableName) {
+                socket.emit('create_table', tableName);
+                closeCreateModal();
+            } else {
+                input.style.border = '1px solid #ff4444';
+                setTimeout(() => input.style.border = '1px solid rgba(255,255,255,0.2)', 1000);
             }
+        }
+
+        function closeCreateModal() {
+            document.getElementById('create-table-modal').style.display = 'none';
         }
 
         function addManualOrder(tableId) {
@@ -999,24 +1894,21 @@
             const price = parseInt(priceInput.value);
 
             if (!name || isNaN(price) || price <= 0) {
-                return alert('Ingresa un nombre y precio válido');
+                showAdminToast('Ingresa un nombre y precio válido', 'warning');
+                return;
             }
 
-            // Simular estructura de pedido
             const orderData = {
                 tableId: tableId,
                 items: [{ name: `(Manual) ${name}`, price: price, quantity: 1 }],
                 total: price
             };
 
-            // Enviamos el pedido al socket (usamos el mismo evento que el cliente)
             socket.emit('place_order', orderData);
 
-            // Limpiar inputs
             nameInput.value = '';
             priceInput.value = '';
 
-            // Reset select
             const select = document.getElementById(`manual-select-${tableId}`);
             if (select) select.selectedIndex = 0;
         }
@@ -1049,102 +1941,268 @@
                 const card = document.createElement('div');
                 card.className = 'table-card';
 
-                let itemsHtml = '';
-                // Recorremos todos los pedidos de esta mesa
+                let ordersHtml = '';
                 data.orders.forEach((order, index) => {
-                    // Separador si hay múltiples pedidos
-                    if (index > 0) itemsHtml += `<div style="margin: 0.5rem 0; border-top: 1px dashed #666;"></div>`;
-
-                    // Hora del pedido
                     const time = new Date(order.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                    itemsHtml += `<div style="font-size: 0.75rem; color: #aaa; margin-bottom: 0.25rem;">Pedido ${index + 1} - ${time}</div>`;
-
+                    let orderItemsHtml = '';
                     order.items.forEach(item => {
-                        itemsHtml += `
+                        orderItemsHtml += `
                             <div class="order-item">
-                                <span>${item.quantity}x ${item.name}</span>
-                                <span>$${(item.price * item.quantity).toLocaleString()}</span>
-                            </div>
-                        `;
+                                <span class="order-item-name">${item.quantity}x ${item.name}</span>
+                                <span class="order-item-price">$${(item.price * item.quantity).toLocaleString()}</span>
+                            </div>`;
                     });
+                    const notesHtml = order.notes ? `<div class="order-notes-display">📝 ${order.notes}</div>` : '';
+                    ordersHtml += `
+                        <div class="order-block">
+                            <div class="order-block-header">
+                                <span class="order-block-time">Pedido ${index + 1} · ${time}</span>
+                                <div class="order-block-actions">
+                                    <button type="button" class="btn-order-edit" onclick="openEditOrderModal('${tId}', ${index})">✏️ Modificar</button>
+                                    <button type="button" class="btn-order-remove" onclick="confirmRemoveOrder('${tId}', ${index})">🗑️ Quitar</button>
+                                </div>
+                            </div>
+                            ${orderItemsHtml}
+                            ${notesHtml}
+                        </div>`;
                 });
 
                 card.innerHTML = `
-                    <div class="table-header">
+                    <div class="table-card-header">
                         <h2>Mesa ${tId}</h2>
-                        <span class="badge">${data.orders.length} Pedidos</span>
+                        <span class="table-card-badge">${data.orders.length} Pedido${data.orders.length !== 1 ? 's' : ''}</span>
                     </div>
-                    <div class="items-list">
-                        ${itemsHtml}
-                    </div>
-                    <div class="table-total">
-                        Total: $${data.grandTotal.toLocaleString()}
-                    </div>
-
-                    <div style="background: rgba(255,255,255,0.05); padding: 0.8rem; margin: 1rem 0; border-radius: 8px;">
-                        <div style="margin-bottom:0.5rem; font-size:0.9rem; color:#ccc;">➕ Agregar Manual:</div>
-                        
-                        <select id="manual-select-${tId}" onchange="fillManualInputs('${tId}', this.value)" style="width: 100%; padding: 5px; margin-bottom: 8px; border-radius: 4px; border:none; background: #eee; color: #333;">
-                            ${productOptionsHtml}
-                        </select>
-
-                        <div style="display: flex; gap: 5px;">
-                            <input type="text" id="manual-item-${tId}" placeholder="Producto" style="width: 60%; padding: 5px; border-radius: 4px; border:none;">
-                            <input type="number" id="manual-price-${tId}" placeholder="$" style="width: 25%; padding: 5px; border-radius: 4px; border:none;">
-                            <button onclick="addManualOrder('${tId}')" style="width: 15%; background: var(--precio-color); border:none; color:white; border-radius:4px; cursor:pointer;">+</button>
+                    <div class="table-card-body">
+                        <div class="table-card-orders">
+                            ${ordersHtml}
+                        </div>
+                        <div class="table-card-add-section">
+                            <div class="section-label">➕ Agregar producto</div>
+                            <select id="manual-select-${tId}" onchange="fillManualInputs('${tId}', this.value)">
+                                ${productOptionsHtml}
+                            </select>
+                            <div class="add-row">
+                                <input type="text" id="manual-item-${tId}" placeholder="Nombre del producto">
+                                <input type="number" id="manual-price-${tId}" placeholder="$" min="0">
+                                <button type="button" class="btn-add-item" onclick="addManualOrder('${tId}')" title="Agregar">+</button>
+                            </div>
                         </div>
                     </div>
-
-                    <button class="clear-btn" onclick="clearTable('${tId}')">Liberar Mesa (Pagado)</button>
+                    <div class="table-card-total-bar">
+                        <div class="table-card-total">Total: $${data.grandTotal.toLocaleString()}</div>
+                    </div>
+                    <button class="clear-btn" onclick="clearTable('${tId}')">Liberar Mesa (Pagado) 🧾</button>
                 `;
                 container.appendChild(card);
             });
         }
 
         function clearTable(tableId) {
-            if (confirm(`¿Confirmar pago y liberar Mesa ${tableId}?`)) {
+            const modal = document.getElementById('clear-table-modal');
+            const msg = document.getElementById('clear-table-msg');
+            const yesBtn = document.getElementById('clear-table-yes');
+
+            msg.textContent = `¿Confirmar pago y liberar "${tableId}"?`;
+            modal.style.display = 'flex';
+
+            // Limpiar listener previo y asignar nuevo
+            yesBtn.onclick = () => {
                 socket.emit('clear_table', tableId);
-                // Optimista update
                 delete tablesData[tableId];
                 renderAllTables();
+                closeClearModal();
+            };
+        }
+
+        function closeClearModal() {
+            document.getElementById('clear-table-modal').style.display = 'none';
+        }
+
+        // --- MODIFICAR PEDIDO ---
+        let editOrderTableId = null;
+        let editOrderIndex = null;
+        let editOrderItems = [];
+
+        function openEditOrderModal(tableId, orderIndex) {
+            const data = tablesData[tableId];
+            if (!data || !data.orders[orderIndex]) return;
+            const order = data.orders[orderIndex];
+            editOrderTableId = tableId;
+            editOrderIndex = orderIndex;
+            editOrderItems = (order.items || []).map(it => ({ name: it.name, price: it.price, quantity: it.quantity || 1 }));
+
+            document.getElementById('edit-order-subtitle').textContent = `Mesa ${tableId} — Pedido #${orderIndex + 1}`;
+            document.getElementById('edit-order-notes').value = order.notes || '';
+            document.getElementById('edit-order-select').innerHTML = productOptionsHtml;
+            document.getElementById('edit-order-item-name').value = '';
+            document.getElementById('edit-order-item-price').value = '';
+            renderEditOrderItems();
+            document.getElementById('edit-order-modal').style.display = 'flex';
+        }
+
+        function closeEditOrderModal() {
+            editOrderTableId = null;
+            editOrderIndex = null;
+            editOrderItems = [];
+            document.getElementById('edit-order-modal').style.display = 'none';
+        }
+
+        function renderEditOrderItems() {
+            const container = document.getElementById('edit-order-items');
+            let total = 0;
+            let html = '';
+            editOrderItems.forEach((item, i) => {
+                const subtotal = item.price * item.quantity;
+                total += subtotal;
+                html += `
+                    <div class="edit-order-item">
+                        <span class="edit-order-item-name">${item.name}</span>
+                        <input type="number" class="edit-order-item-qty" min="1" value="${item.quantity}" onchange="updateEditOrderQty(${i}, this.value)">
+                        <span class="edit-order-item-price-tag">$${item.price.toLocaleString()} c/u</span>
+                        <span class="edit-order-item-subtotal">$${subtotal.toLocaleString()}</span>
+                        <button type="button" class="btn-remove-item" onclick="removeEditOrderItem(${i})" title="Quitar producto">✕</button>
+                    </div>
+                `;
+            });
+            container.innerHTML = html || '<p class="edit-order-empty-msg">Sin productos. Agrega al menos uno desde abajo.</p>';
+            document.getElementById('edit-order-total-display').textContent = `Total: $${total.toLocaleString()}`;
+        }
+
+        function updateEditOrderQty(index, value) {
+            const qty = parseInt(value, 10);
+            if (qty >= 1) {
+                editOrderItems[index].quantity = qty;
+                renderEditOrderItems();
             }
         }
 
+        function removeEditOrderItem(index) {
+            editOrderItems.splice(index, 1);
+            renderEditOrderItems();
+        }
+
+        function fillEditOrderInputs(value) {
+            if (!value) return;
+            const [name, price] = value.split('|');
+            document.getElementById('edit-order-item-name').value = name;
+            document.getElementById('edit-order-item-price').value = price;
+        }
+
+        function addItemToEditOrder() {
+            const name = document.getElementById('edit-order-item-name').value.trim();
+            const price = parseInt(document.getElementById('edit-order-item-price').value, 10);
+            if (!name || isNaN(price) || price <= 0) {
+                showAdminToast('Ingresa nombre y precio válido', 'warning');
+                return;
+            }
+            const displayName = name.startsWith('(Manual)') ? name : `(Manual) ${name}`;
+            editOrderItems.push({ name: displayName, price, quantity: 1 });
+            document.getElementById('edit-order-item-name').value = '';
+            document.getElementById('edit-order-item-price').value = '';
+            document.getElementById('edit-order-select').selectedIndex = 0;
+            renderEditOrderItems();
+        }
+
+        function saveEditedOrder() {
+            if (editOrderTableId === null || editOrderIndex === null) return;
+            if (editOrderItems.length === 0) {
+                showAdminToast('El pedido debe tener al menos un producto', 'warning');
+                return;
+            }
+            const total = editOrderItems.reduce((s, it) => s + it.price * it.quantity, 0);
+            const notes = document.getElementById('edit-order-notes').value.trim();
+            socket.emit('update_order', {
+                tableId: editOrderTableId,
+                orderIndex: editOrderIndex,
+                items: editOrderItems,
+                total,
+                notes
+            });
+            closeEditOrderModal();
+        }
+
+        let pendingRemoveOrder = null; // { tableId, orderIndex }
+
+        function confirmRemoveOrder(tableId, orderIndex) {
+            const data = tablesData[tableId];
+            const order = data && data.orders[orderIndex];
+            if (!order) return;
+            const total = order.total || 0;
+            const msg = document.getElementById('remove-order-msg');
+            const yesBtn = document.getElementById('remove-order-yes');
+            if (msg) msg.textContent = `¿Eliminar este pedido ($${total.toLocaleString()}) de la mesa "${tableId}"? Se devolverá el stock al inventario.`;
+            pendingRemoveOrder = { tableId, orderIndex };
+            yesBtn.onclick = confirmRemoveOrderDo;
+            document.getElementById('remove-order-modal').style.display = 'flex';
+        }
+
+        function confirmRemoveOrderDo() {
+            if (!pendingRemoveOrder) return;
+            socket.emit('remove_order', pendingRemoveOrder);
+            pendingRemoveOrder = null;
+            closeRemoveOrderModal();
+        }
+
+        function closeRemoveOrderModal() {
+            pendingRemoveOrder = null;
+            document.getElementById('remove-order-modal').style.display = 'none';
+        }
+
         // --- HISTORY & CLOSE DAY LOGIC ---
+        let fullHistory = []; // Guardamos todo el historial para filtrar sin re-pedir al servidor
 
         function requestHistory() {
             document.getElementById('history-overlay').style.display = 'flex';
             document.getElementById('history-list').innerHTML = 'Cargando datos...';
+            // Resetear filtro de fecha al abrir
+            const datePicker = document.getElementById('history-date-picker');
+            if (datePicker) datePicker.value = '';
+            const clearBtn = document.getElementById('btn-clear-filter');
+            if (clearBtn) clearBtn.style.display = 'none';
+            const statsBox = document.getElementById('history-stats');
+            if (statsBox) statsBox.style.display = 'none';
             socket.emit('get_history');
         }
 
         socket.on('history_data', (history) => {
+            fullHistory = history || [];
+            renderHistory(fullHistory);
+        });
+
+        function renderHistory(entries) {
             const list = document.getElementById('history-list');
-            if (!history || history.length === 0) {
-                list.innerHTML = '<p>No hay historial de ventas registrado.</p>';
+            const statsBox = document.getElementById('history-stats');
+
+            if (!entries || entries.length === 0) {
+                list.innerHTML = '<p style="text-align:center; opacity:0.6;">No hay registros para este período.</p>';
+                if (statsBox) statsBox.style.display = 'none';
                 return;
             }
 
+            // Mostrar estadísticas del período filtrado
+            if (statsBox) {
+                const total = entries.reduce((s, e) => s + e.total, 0);
+                document.getElementById('stat-count').textContent = entries.length;
+                document.getElementById('stat-total').textContent = `$${total.toLocaleString()}`;
+                statsBox.style.display = 'flex';
+            }
+
             let html = '';
-            history.forEach(entry => {
+            entries.forEach(entry => {
                 const date = new Date(entry.timestamp).toLocaleString();
 
-                // Agrupar items por nombre para mostrar resumen
                 const itemSummary = {};
                 if (entry.detailedOrders) {
                     entry.detailedOrders.forEach(order => {
                         if (order.items) {
                             order.items.forEach(item => {
-                                if (!itemSummary[item.name]) {
-                                    itemSummary[item.name] = 0;
-                                }
+                                if (!itemSummary[item.name]) itemSummary[item.name] = 0;
                                 itemSummary[item.name] += item.quantity;
                             });
                         }
                     });
                 }
 
-                // Generar HTML de items
                 let itemsHtml = '';
                 for (const [name, qty] of Object.entries(itemSummary)) {
                     itemsHtml += `<span style="display:inline-block; background:rgba(255,255,255,0.1); padding:2px 6px; border-radius:4px; margin:2px; font-size:0.8rem;">${qty}x ${name}</span>`;
@@ -1162,30 +2220,78 @@
                             </div>
                         </div>
                         <div style="border-top: 1px dashed #555; padding-top: 0.5rem; color: #ccc;">
-                            ${itemsHtml}
+                            ${itemsHtml || '<span style="opacity:0.5; font-size:0.85rem;">Sin detalle</span>'}
                         </div>
                     </div>
                 `;
             });
             list.innerHTML = html;
-        });
+        }
+
+        // Filtrar historial por fecha seleccionada en el calendario
+        function filterHistory(type, dateValue) {
+            if (type === 'date' && dateValue) {
+                const selected = new Date(dateValue + 'T00:00:00').toDateString();
+                const filtered = fullHistory.filter(e => new Date(e.timestamp).toDateString() === selected);
+                // Mostrar botón para limpiar
+                const clearBtn = document.getElementById('btn-clear-filter');
+                if (clearBtn) clearBtn.style.display = 'inline-block';
+                renderHistory(filtered);
+            } else {
+                renderHistory(fullHistory);
+            }
+        }
+
+        // Limpiar filtro y mostrar todo
+        function clearHistoryFilter() {
+            const datePicker = document.getElementById('history-date-picker');
+            if (datePicker) datePicker.value = '';
+            const clearBtn = document.getElementById('btn-clear-filter');
+            if (clearBtn) clearBtn.style.display = 'none';
+            const statsBox = document.getElementById('history-stats');
+            if (statsBox) statsBox.style.display = 'none';
+            renderHistory(fullHistory);
+        }
 
         function closeDay() {
-            if (confirm("⚠️ ¿Estás seguro de cerrar el día?\n\nEsto reiniciará el contador de 'Ventas del Día' y los gastos a $0, y preparará el reporte.")) {
-                socket.emit('close_day');
+            showCloseDayModal();
+        }
+
+        function showCloseDayModal() {
+            let overlay = document.getElementById('close-day-modal');
+            if (!overlay) {
+                overlay = document.createElement('div');
+                overlay.id = 'close-day-modal';
+                overlay.className = 'admin-modal-overlay';
+                overlay.innerHTML = `
+                    <div class="admin-modal-box">
+                        <div style="font-size:2.5rem;margin-bottom:0.5rem;">⚠️</div>
+                        <h3 style="color:#00ff66;">Cerrar el Día</h3>
+                        <p>Se reiniciarán las ventas y los gastos a $0.<br>Se abrirá el reporte de WhatsApp.</p>
+                        <div class="admin-modal-btns">
+                            <button class="btn-modal-confirm" id="close-day-yes" style="background: linear-gradient(45deg,#00ff00,#00aa00); color:black;">✅ Cerrar Día</button>
+                            <button class="btn-modal-cancel" onclick="document.getElementById('close-day-modal').style.display='none'">Cancelar</button>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(overlay);
+                document.getElementById('close-day-yes').onclick = () => {
+                    overlay.style.display = 'none';
+                    socket.emit('close_day');
+                };
+                overlay.onclick = (e) => { if (e.target === overlay) overlay.style.display = 'none'; };
             }
+            overlay.style.display = 'flex';
         }
 
         socket.on('day_closed', (data) => {
             const { closedTotal, closedExpenses, netTotal, expensesList, date } = data;
 
-            // Reiniciar visualmente
             updateDailyTotal(0);
             updateExpensesDisplay(0);
             localExpenses = [];
             renderExpensesList([]);
 
-            // Construir detalle de gastos para WhatsApp
             let expensesDetail = '';
             if (expensesList && expensesList.length > 0) {
                 expensesDetail = '\n\n📉 *Gastos del Día:*\n';
@@ -1195,7 +2301,6 @@
                 expensesDetail += `  Total gastos: $${closedExpenses.toLocaleString()}`;
             }
 
-            // Construir mensaje de WhatsApp
             const phone = "573045330576";
             const message = `📅 *Cierre de Caja - Fleiva Bar*\nFecha: ${date}\n\n💰 *Total Vendido:* $${closedTotal.toLocaleString()}${expensesDetail}\n\n✅ *Ganancia Neta:* $${netTotal.toLocaleString()}\n\n🔄 El sistema ha sido reiniciado para el siguiente día.`;
 
@@ -1203,11 +2308,31 @@
             window.open(url, '_blank');
         });
 
+        // --- TOAST ADMIN (en lugar de alert) ---
+        function showAdminToast(message, type = 'info') {
+            const existing = document.getElementById('admin-toast-msg');
+            if (existing) existing.remove();
+
+            const toast = document.createElement('div');
+            toast.id = 'admin-toast-msg';
+            const colors = { warning: '#ffaa00', error: '#ff4444', success: '#00ff66', info: 'var(--precio-color)' };
+            toast.style.cssText = `
+                position: fixed; top: 1.2rem; left: 50%; transform: translateX(-50%);
+                background: #1a0025; border: 2px solid ${colors[type]};
+                border-radius: 12px; padding: 0.8rem 1.5rem; color: white;
+                font-size: 0.95rem; z-index: 9999; text-align: center;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.5); max-width: 90vw;
+                animation: slideInModal 0.3s ease;
+            `;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
         // --- TOAST DE STOCK BAJO ---
         let lowStockToastTimer = null;
-        let lastLowStockKey = ''; // Para no repetir el mismo toast
+        let lastLowStockKey = '';
 
-        // Al cargar, pedir inventario para verificar stock
         socket.emit('get_inventory');
 
         socket.on('inventory_data', (inventory) => {
@@ -1215,11 +2340,10 @@
 
             const lowItems = Object.entries(inventory)
                 .filter(([, stock]) => stock < 5)
-                .sort((a, b) => a[1] - b[1]); // Ordenar por stock más bajo primero
+                .sort((a, b) => a[1] - b[1]);
 
             if (lowItems.length === 0) return;
 
-            // Construir una clave única para evitar repetir el mismo toast
             const key = lowItems.map(([n, s]) => `${n}:${s}`).join(',');
             if (key === lastLowStockKey) return;
             lastLowStockKey = key;
@@ -1230,7 +2354,6 @@
         function showLowStockToast(items) {
             const container = document.getElementById('toast-container');
 
-            // Si ya hay uno visible, quitarlo antes
             const existing = container.querySelector('.toast');
             if (existing) dismissToast(existing, true);
 
@@ -1253,18 +2376,13 @@
             `;
 
             container.appendChild(toast);
-
-            // Auto-dismiss después de 8 segundos
             lowStockToastTimer = setTimeout(() => dismissToast(toast), 8000);
         }
 
         function dismissToast(toast, immediate = false) {
             if (!toast) return;
             if (lowStockToastTimer) clearTimeout(lowStockToastTimer);
-            if (immediate) {
-                toast.remove();
-                return;
-            }
+            if (immediate) { toast.remove(); return; }
             toast.classList.add('toast-hide');
             setTimeout(() => toast.remove(), 380);
         }
