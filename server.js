@@ -36,7 +36,9 @@ const DATA_FILE = path.join(__dirname, 'data', 'store.json');
 let store = {
     activeOrders: {},
     dailyTotal: 0,
+    dailyExpenses: 0,
     history: [],
+    expenses: [],
     inventory: {}
 };
 
@@ -116,7 +118,9 @@ io.on('connection', (socket) => {
         // Enviar estado actual
         socket.emit('initial_data', {
             activeOrders: store.activeOrders,
-            dailyTotal: store.dailyTotal
+            dailyTotal: store.dailyTotal,
+            dailyExpenses: store.dailyExpenses || 0,
+            expenses: store.expenses || []
         });
     });
 
@@ -238,23 +242,78 @@ io.on('connection', (socket) => {
     // CERRAR DÍA (Resetear ganancias)
     socket.on('close_day', () => {
         const finalTotal = store.dailyTotal;
+        const finalExpenses = store.dailyExpenses || 0;
+        const netTotal = finalTotal - finalExpenses;
         const date = new Date().toLocaleDateString();
+        const expensesList = store.expenses || [];
 
-        // Podríamos guardar un registro de 'cierres' si quisiéramos, 
-        // por ahora solo reseteamos el contador diario.
-        // El historial de mesas se MANTIENE para consulta.
-
+        // Resetear contadores diarios (el historial de mesas y gastos se MANTIENE)
         store.dailyTotal = 0;
+        store.dailyExpenses = 0;
+        store.expenses = [];
         saveData();
 
         // Notificar al admin con el monto final para el mensaje de WhatsApp
-        // Y actualizar la vista a 0
         io.to('admin_room').emit('day_closed', {
             closedTotal: finalTotal,
+            closedExpenses: finalExpenses,
+            netTotal: netTotal,
+            expensesList: expensesList,
             date: date
         });
 
-        console.log(`Día cerrado. Total recaudado: $${finalTotal}`);
+        console.log(`Día cerrado. Ventas: $${finalTotal} | Gastos: $${finalExpenses} | Neto: $${netTotal}`);
+    });
+
+    // AGREGAR GASTO
+    socket.on('add_expense', (data) => {
+        const { description, amount } = data;
+        if (!description || !amount || amount <= 0) return;
+
+        const expense = {
+            id: Date.now().toString(),
+            description: description.trim(),
+            amount: parseFloat(amount),
+            timestamp: new Date()
+        };
+
+        if (!store.expenses) store.expenses = [];
+        if (!store.dailyExpenses) store.dailyExpenses = 0;
+
+        store.expenses.push(expense);
+        store.dailyExpenses += expense.amount;
+        saveData();
+
+        io.to('admin_room').emit('expense_added', {
+            expense,
+            dailyExpenses: store.dailyExpenses
+        });
+
+        console.log(`Gasto registrado: ${description} - $${amount}`);
+    });
+
+    // ELIMINAR GASTO
+    socket.on('delete_expense', (expenseId) => {
+        if (!store.expenses) return;
+        const idx = store.expenses.findIndex(e => e.id === expenseId);
+        if (idx !== -1) {
+            const removed = store.expenses.splice(idx, 1)[0];
+            store.dailyExpenses = Math.max(0, (store.dailyExpenses || 0) - removed.amount);
+            saveData();
+            io.to('admin_room').emit('expense_deleted', {
+                expenseId,
+                dailyExpenses: store.dailyExpenses
+            });
+            console.log(`Gasto eliminado: ${removed.description}`);
+        }
+    });
+
+    // OBTENER GASTOS
+    socket.on('get_expenses', () => {
+        socket.emit('expenses_data', {
+            expenses: store.expenses || [],
+            dailyExpenses: store.dailyExpenses || 0
+        });
     });
 
     // CREAR MESA MANUALMENTE (Desde Admin)

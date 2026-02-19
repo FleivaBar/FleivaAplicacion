@@ -173,6 +173,151 @@
             color: white;
         }
 
+        .btn-expenses {
+            background: linear-gradient(45deg, #ff6600, #cc3300);
+            color: white;
+        }
+
+        /* --- NET PROFIT DISPLAY --- */
+        .net-profit-box {
+            background: rgba(20, 0, 10, 0.5);
+            border: 1px solid rgba(255, 100, 0, 0.5);
+            border-radius: 10px;
+            padding: 0.6rem 1.2rem;
+            display: inline-block;
+            margin-left: 1rem;
+            vertical-align: middle;
+        }
+
+        /* --- EXPENSES MODAL --- */
+        .expenses-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .expenses-modal {
+            background: #1a0a00;
+            padding: 2rem;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+            border: 2px solid #ff6600;
+            color: white;
+            max-height: 85vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 0 40px rgba(255, 100, 0, 0.3);
+        }
+
+        .expense-form {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .expense-form input {
+            flex: 1;
+            min-width: 120px;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #555;
+            background: rgba(255, 255, 255, 0.08);
+            color: white;
+            font-size: 0.95rem;
+        }
+
+        .expense-form input::placeholder {
+            color: #888;
+        }
+
+        .btn-add-expense {
+            background: linear-gradient(45deg, #ff6600, #cc3300);
+            border: none;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.95rem;
+            transition: transform 0.2s;
+            white-space: nowrap;
+        }
+
+        .btn-add-expense:hover {
+            transform: scale(1.05);
+        }
+
+        .expense-item {
+            background: rgba(255, 100, 0, 0.08);
+            border-left: 4px solid #ff6600;
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .expense-item .exp-info {
+            flex: 1;
+        }
+
+        .expense-item .exp-desc {
+            font-weight: bold;
+            font-size: 0.95rem;
+        }
+
+        .expense-item .exp-time {
+            font-size: 0.75rem;
+            color: #aaa;
+            margin-top: 2px;
+        }
+
+        .expense-item .exp-amount {
+            color: #ff6633;
+            font-weight: bold;
+            font-size: 1.1rem;
+            white-space: nowrap;
+        }
+
+        .btn-del-expense {
+            background: rgba(255, 0, 0, 0.15);
+            border: 1px solid rgba(255, 0, 0, 0.4);
+            color: #ff6666;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1rem;
+            line-height: 1;
+            transition: background 0.2s;
+            flex-shrink: 0;
+        }
+
+        .btn-del-expense:hover {
+            background: rgba(255, 0, 0, 0.4);
+        }
+
+        .expenses-total-bar {
+            background: rgba(255, 100, 0, 0.15);
+            border: 1px solid rgba(255, 100, 0, 0.4);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            text-align: right;
+            font-size: 1rem;
+            margin-top: 1rem;
+        }
+
         /* --- LOGIN OVERLAY --- */
         #login-overlay {
             position: fixed;
@@ -262,7 +407,15 @@
             <button class="btn-header btn-create-table" onclick="createManualTable()">➕ Crear Mesa/Orden</button>
             <button class="btn-header" onclick="requestHistory()">📜 Ver Historial</button>
             <a href="inventory.html" class="btn-header" style="text-decoration: none;">📦 Inventario</a>
+            <button class="btn-header btn-expenses" onclick="openExpenses()">💸 Gastos del Día</button>
             <button class="btn-header btn-close-day" onclick="closeDay()">✅ Cerrar Día y Enviar a WhatsApp</button>
+        </div>
+        <div style="margin-top: 0.8rem;">
+            <span style="font-size:0.9rem; color:#ccc;">📉 Gastos: <strong id="daily-expenses-display"
+                    style="color:#ff6633;">$0</strong></span>
+            &nbsp;&nbsp;
+            <span style="font-size:0.9rem; color:#ccc;">💵 Ganancia Neta: <strong id="net-profit-display"
+                    style="color:#00ffcc;">$0</strong></span>
         </div>
     </header>
 
@@ -283,6 +436,33 @@
         </div>
     </div>
 
+    <!-- Expenses Modal -->
+    <div id="expenses-overlay" class="expenses-overlay">
+        <div class="expenses-modal">
+            <button onclick="document.getElementById('expenses-overlay').style.display='none'"
+                style="position: absolute; top: 10px; right: 10px; background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer;">&times;</button>
+            <h2
+                style="margin-top: 0; color: #ff6600; border-bottom: 1px solid #553300; padding-bottom: 0.5rem; margin-bottom: 1.2rem;">
+                💸 Gastos del Día
+            </h2>
+
+            <div class="expense-form">
+                <input type="text" id="exp-desc" placeholder="¿En qué se gastó? (ej: Limones)" />
+                <input type="number" id="exp-amount" placeholder="$ Monto" min="1" style="max-width: 130px;" />
+                <button class="btn-add-expense" onclick="addExpense()">➕ Registrar</button>
+            </div>
+
+            <div id="expense-list">
+                <p style="text-align:center; opacity:0.5;">No hay gastos registrados hoy.</p>
+            </div>
+
+            <div class="expenses-total-bar">
+                Total gastado hoy: <strong id="modal-expenses-total"
+                    style="color:#ff6633; font-size:1.2rem;">$0</strong>
+            </div>
+        </div>
+    </div>
+
     <script src="/socket.io/socket.io.js"></script>
     <script src="/products.js"></script>
     <script>
@@ -293,19 +473,31 @@
         const errorMsg = document.getElementById('login-error');
 
         // --- LÓGICA DE AUTENTICACIÓN ---
-        function checkSession() {
+        function isSessionValid() {
             const lastSessionDate = localStorage.getItem('fleiva_admin_auth_date');
             const today = new Date().toDateString();
+            return lastSessionDate === today;
+        }
 
-            if (lastSessionDate === today) {
+        function checkSession() {
+            if (isSessionValid()) {
                 // Sesión válida para hoy -> Ocultar login
                 loginOverlay.style.display = 'none';
-                socket.emit('join_admin'); // Unirse solo si hay sesión
+                // join_admin se emite desde socket.on('connect') automáticamente
             } else {
                 // No hay sesión o caducó -> Mostrar login
                 loginOverlay.style.display = 'flex';
             }
         }
+
+        // ✅ CLAVE: Este evento se dispara en la conexión inicial Y en cada reconexión.
+        // Esto soluciona que en móvil, al reconectar, no se pierdan los pedidos activos.
+        socket.on('connect', () => {
+            console.log('Socket conectado/reconectado:', socket.id);
+            if (isSessionValid()) {
+                socket.emit('join_admin');
+            }
+        });
 
         function checkPassword() {
             const password = passwordInput.value;
@@ -340,7 +532,7 @@
             }
         });
 
-        // Ejecutar check al cargar
+        // Ejecutar check al cargar (la UI, no el join — eso lo maneja socket.on('connect'))
         checkSession();
 
         // --- RESTO CÓDIGO ---
@@ -362,19 +554,16 @@
         }
 
 
-        socket.emit('join_admin');
-
-
         socket.on('initial_data', (data) => {
             console.log('Datos iniciales:', data);
 
-            // data ahora trae { activeOrders, dailyTotal }
-            const { activeOrders, dailyTotal } = data;
+            const { activeOrders, dailyTotal, dailyExpenses, expenses } = data;
             updateDailyTotal(dailyTotal);
+            updateExpensesDisplay(dailyExpenses || 0);
+            renderExpensesList(expenses || []);
 
             // Reiniciamos la vista
             tablesData = {};
-            // Procesar la estructura activeOrders del servidor
             for (const [tableId, orders] of Object.entries(activeOrders)) {
                 if (!tablesData[tableId]) {
                     tablesData[tableId] = { orders: [], grandTotal: 0 };
@@ -428,6 +617,110 @@
             if (amount !== undefined && el) {
                 el.innerText = `$${amount.toLocaleString()}`;
             }
+            // Recalculate net profit
+            recalcNet();
+        }
+
+        function updateExpensesDisplay(amount) {
+            const el = document.getElementById('daily-expenses-display');
+            if (el) el.innerText = `$${amount.toLocaleString()}`;
+            recalcNet();
+        }
+
+        function recalcNet() {
+            const salesEl = document.getElementById('daily-total');
+            const expEl = document.getElementById('daily-expenses-display');
+            const netEl = document.getElementById('net-profit-display');
+            if (!salesEl || !expEl || !netEl) return;
+            const sales = parseFloat(salesEl.innerText.replace(/[$,]/g, '')) || 0;
+            const exp = parseFloat(expEl.innerText.replace(/[$,]/g, '')) || 0;
+            const net = sales - exp;
+            netEl.innerText = `$${net.toLocaleString()}`;
+            netEl.style.color = net >= 0 ? '#00ffcc' : '#ff4444';
+        }
+
+        // --- EXPENSES LOGIC ---
+        let localExpenses = [];
+
+        function openExpenses() {
+            document.getElementById('expenses-overlay').style.display = 'flex';
+            socket.emit('get_expenses');
+        }
+
+        socket.on('expenses_data', (data) => {
+            localExpenses = data.expenses || [];
+            updateExpensesDisplay(data.dailyExpenses || 0);
+            renderExpensesList(localExpenses);
+        });
+
+        socket.on('expense_added', (data) => {
+            localExpenses.push(data.expense);
+            updateExpensesDisplay(data.dailyExpenses);
+            renderExpensesList(localExpenses);
+        });
+
+        socket.on('expense_deleted', (data) => {
+            localExpenses = localExpenses.filter(e => e.id !== data.expenseId);
+            updateExpensesDisplay(data.dailyExpenses);
+            renderExpensesList(localExpenses);
+        });
+
+        function addExpense() {
+            const desc = document.getElementById('exp-desc').value.trim();
+            const amount = parseFloat(document.getElementById('exp-amount').value);
+            if (!desc) return alert('Por favor escribe en qué se gastó el dinero.');
+            if (!amount || amount <= 0) return alert('Ingresa un monto válido mayor a 0.');
+
+            socket.emit('add_expense', { description: desc, amount });
+
+            document.getElementById('exp-desc').value = '';
+            document.getElementById('exp-amount').value = '';
+        }
+
+        // Allow Enter key on expense inputs
+        document.addEventListener('DOMContentLoaded', () => {
+            ['exp-desc', 'exp-amount'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.addEventListener('keypress', e => { if (e.key === 'Enter') addExpense(); });
+            });
+        });
+
+        function deleteExpense(id) {
+            if (confirm('¿Eliminar este gasto?')) {
+                socket.emit('delete_expense', id);
+            }
+        }
+
+        function renderExpensesList(expenses) {
+            const list = document.getElementById('expense-list');
+            const totalEl = document.getElementById('modal-expenses-total');
+            if (!list) return;
+
+            if (!expenses || expenses.length === 0) {
+                list.innerHTML = '<p style="text-align:center; opacity:0.5;">No hay gastos registrados hoy.</p>';
+                if (totalEl) totalEl.innerText = '$0';
+                return;
+            }
+
+            let total = 0;
+            let html = '';
+            expenses.forEach(exp => {
+                total += exp.amount;
+                const time = new Date(exp.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                html += `
+                    <div class="expense-item">
+                        <div class="exp-info">
+                            <div class="exp-desc">📌 ${exp.description}</div>
+                            <div class="exp-time">${time}</div>
+                        </div>
+                        <span class="exp-amount">-$${exp.amount.toLocaleString()}</span>
+                        <button class="btn-del-expense" onclick="deleteExpense('${exp.id}')" title="Eliminar">✕</button>
+                    </div>
+                `;
+            });
+
+            list.innerHTML = html;
+            if (totalEl) totalEl.innerText = `$${total.toLocaleString()}`;
         }
 
         function createManualTable() {
@@ -618,22 +911,35 @@
         });
 
         function closeDay() {
-            if (confirm("⚠️ ¿Estás seguro de cerrar el día?\n\nEsto reiniciará el contador de 'Ventas del Día' a $0 y preparará el reporte.")) {
+            if (confirm("⚠️ ¿Estás seguro de cerrar el día?\n\nEsto reiniciará el contador de 'Ventas del Día' y los gastos a $0, y preparará el reporte.")) {
                 socket.emit('close_day');
             }
         }
 
         socket.on('day_closed', (data) => {
-            const { closedTotal, date } = data;
-            updateDailyTotal(0); // Reinicia visualmente a 0
+            const { closedTotal, closedExpenses, netTotal, expensesList, date } = data;
+
+            // Reiniciar visualmente
+            updateDailyTotal(0);
+            updateExpensesDisplay(0);
+            localExpenses = [];
+            renderExpensesList([]);
+
+            // Construir detalle de gastos para WhatsApp
+            let expensesDetail = '';
+            if (expensesList && expensesList.length > 0) {
+                expensesDetail = '\n\n📉 *Gastos del Día:*\n';
+                expensesList.forEach(e => {
+                    expensesDetail += `  • ${e.description}: $${e.amount.toLocaleString()}\n`;
+                });
+                expensesDetail += `  Total gastos: $${closedExpenses.toLocaleString()}`;
+            }
 
             // Construir mensaje de WhatsApp
             const phone = "573045330576";
-            const message = `📅 *Cierre de Caja - Fleiva Bar*\nFecha: ${date}\n\n💰 *Total Vendido:* $${closedTotal.toLocaleString()}\n\n✅ El sistema ha sido reiniciado para el siguiente día.`;
+            const message = `📅 *Cierre de Caja - Fleiva Bar*\nFecha: ${date}\n\n💰 *Total Vendido:* $${closedTotal.toLocaleString()}${expensesDetail}\n\n✅ *Ganancia Neta:* $${netTotal.toLocaleString()}\n\n🔄 El sistema ha sido reiniciado para el siguiente día.`;
 
             const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
-
-            // Abrir WhatsApp en nueva pestaña
             window.open(url, '_blank');
         });
     </script>
