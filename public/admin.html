@@ -736,31 +736,31 @@
             }
         });
 
+        // Variables numéricas para evitar errores de parseo del DOM según el locale
+        let currentDailyTotal = 0;
+        let currentDailyExpenses = 0;
+
         function updateDailyTotal(amount) {
+            currentDailyTotal = (amount !== undefined && !isNaN(amount)) ? Number(amount) : 0;
             const el = document.getElementById('daily-total');
-            if (amount !== undefined && el) {
-                el.innerText = `$${amount.toLocaleString()}`;
-            }
-            // Recalculate net profit
+            if (el) el.innerText = `$${currentDailyTotal.toLocaleString()}`;
             recalcNet();
         }
 
         function updateExpensesDisplay(amount) {
+            currentDailyExpenses = (amount !== undefined && !isNaN(amount)) ? Number(amount) : 0;
             const el = document.getElementById('daily-expenses-display');
-            if (el) el.innerText = `$${amount.toLocaleString()}`;
+            if (el) el.innerText = `$${currentDailyExpenses.toLocaleString()}`;
             recalcNet();
         }
 
         function recalcNet() {
-            const salesEl = document.getElementById('daily-total');
-            const expEl = document.getElementById('daily-expenses-display');
+            const net = currentDailyTotal - currentDailyExpenses;
             const netEl = document.getElementById('net-profit-display');
-            if (!salesEl || !expEl || !netEl) return;
-            const sales = parseFloat(salesEl.innerText.replace(/[$,]/g, '')) || 0;
-            const exp = parseFloat(expEl.innerText.replace(/[$,]/g, '')) || 0;
-            const net = sales - exp;
-            netEl.innerText = `$${net.toLocaleString()}`;
-            netEl.style.color = net >= 0 ? '#00ffcc' : '#ff4444';
+            if (netEl) {
+                netEl.innerText = `$${net.toLocaleString()}`;
+                netEl.style.color = net >= 0 ? '#00ffcc' : '#ff4444';
+            }
         }
 
         // --- EXPENSES LOGIC ---
