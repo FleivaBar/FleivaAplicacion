@@ -90,6 +90,127 @@
             display: none;
         }
 
+        /* --- TOAST NOTIFICATIONS (Stock Bajo) --- */
+        #toast-container {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            z-index: 9000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 340px;
+            width: calc(100% - 3rem);
+        }
+
+        .toast {
+            background: linear-gradient(135deg, #2a0000 0%, #3a0800 100%);
+            border: 1px solid #ff4444;
+            border-left: 5px solid #ff4444;
+            border-radius: 10px;
+            padding: 1rem 1.2rem;
+            color: white;
+            box-shadow: 0 4px 20px rgba(255, 50, 50, 0.4);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            animation: toastSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .toast.toast-hide {
+            animation: toastSlideOut 0.35s ease-in forwards;
+        }
+
+        .toast-title {
+            font-weight: bold;
+            font-size: 0.95rem;
+            color: #ff7070;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .toast-body {
+            font-size: 0.82rem;
+            color: #ffcccc;
+            line-height: 1.5;
+        }
+
+        .toast-item-tag {
+            display: inline-block;
+            background: rgba(255, 68, 68, 0.2);
+            border: 1px solid rgba(255, 68, 68, 0.5);
+            padding: 1px 7px;
+            border-radius: 4px;
+            margin: 2px;
+            font-size: 0.78rem;
+        }
+
+        .toast-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            background: #ff4444;
+            border-radius: 0 0 0 10px;
+            animation: toastProgress 8s linear forwards;
+        }
+
+        .toast-close {
+            background: none;
+            border: none;
+            color: #ff9999;
+            cursor: pointer;
+            font-size: 1rem;
+            line-height: 1;
+            padding: 0;
+            margin-left: 8px;
+            flex-shrink: 0;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+
+        .toast-close:hover {
+            opacity: 1;
+        }
+
+        @keyframes toastSlideIn {
+            from {
+                transform: translateX(110%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes toastSlideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+
+            to {
+                transform: translateX(110%);
+                opacity: 0;
+            }
+        }
+
+        @keyframes toastProgress {
+            from {
+                width: 100%;
+            }
+
+            to {
+                width: 0%;
+            }
+        }
+
+
         /* History Modal */
         .history-overlay {
             position: fixed;
@@ -435,6 +556,9 @@
             <div id="history-list">Cargando...</div>
         </div>
     </div>
+
+    <!-- Toast de stock bajo -->
+    <div id="toast-container"></div>
 
     <!-- Expenses Modal -->
     <div id="expenses-overlay" class="expenses-overlay">
@@ -942,6 +1066,72 @@
             const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
             window.open(url, '_blank');
         });
+
+        // --- TOAST DE STOCK BAJO ---
+        let lowStockToastTimer = null;
+        let lastLowStockKey = ''; // Para no repetir el mismo toast
+
+        // Al cargar, pedir inventario para verificar stock
+        socket.emit('get_inventory');
+
+        socket.on('inventory_data', (inventory) => {
+            if (!inventory) return;
+
+            const lowItems = Object.entries(inventory)
+                .filter(([, stock]) => stock < 5)
+                .sort((a, b) => a[1] - b[1]); // Ordenar por stock más bajo primero
+
+            if (lowItems.length === 0) return;
+
+            // Construir una clave única para evitar repetir el mismo toast
+            const key = lowItems.map(([n, s]) => `${n}:${s}`).join(',');
+            if (key === lastLowStockKey) return;
+            lastLowStockKey = key;
+
+            showLowStockToast(lowItems);
+        });
+
+        function showLowStockToast(items) {
+            const container = document.getElementById('toast-container');
+
+            // Si ya hay uno visible, quitarlo antes
+            const existing = container.querySelector('.toast');
+            if (existing) dismissToast(existing, true);
+
+            const itemTagsHtml = items
+                .map(([name, stock]) => `<span class="toast-item-tag">🚨 ${name} <strong>(${stock})</strong></span>`)
+                .join(' ');
+
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = `
+                <div class="toast-title">
+                    <span>⚠️ Stock Bajo en Inventario</span>
+                    <button class="toast-close" onclick="dismissToast(this.closest('.toast'))" title="Cerrar">✕</button>
+                </div>
+                <div class="toast-body">
+                    Los siguientes productos tienen menos de 5 unidades:<br>
+                    <div style="margin-top: 5px;">${itemTagsHtml}</div>
+                </div>
+                <div class="toast-progress"></div>
+            `;
+
+            container.appendChild(toast);
+
+            // Auto-dismiss después de 8 segundos
+            lowStockToastTimer = setTimeout(() => dismissToast(toast), 8000);
+        }
+
+        function dismissToast(toast, immediate = false) {
+            if (!toast) return;
+            if (lowStockToastTimer) clearTimeout(lowStockToastTimer);
+            if (immediate) {
+                toast.remove();
+                return;
+            }
+            toast.classList.add('toast-hide');
+            setTimeout(() => toast.remove(), 380);
+        }
     </script>
 </body>
 
