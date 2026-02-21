@@ -1849,7 +1849,7 @@
                 html += `
                     <div class="expense-item">
                         <div class="exp-info">
-                            <div class="exp-desc">📌 ${exp.description}</div>
+                            <div class="exp-desc">${exp.description}</div>
                             <div class="exp-time">${time}</div>
                         </div>
                         <span class="exp-amount">-$${exp.amount.toLocaleString()}</span>
@@ -1952,7 +1952,7 @@
                                 <span class="order-item-price">$${(item.price * item.quantity).toLocaleString()}</span>
                             </div>`;
                     });
-                    const notesHtml = order.notes ? `<div class="order-notes-display">📝 ${order.notes}</div>` : '';
+                    const notesHtml = order.notes ? `<div class="order-notes-display">${order.notes}</div>` : '';
                     ordersHtml += `
                         <div class="order-block">
                             <div class="order-block-header">

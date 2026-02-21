@@ -6,6 +6,8 @@ const { Server } = require("socket.io");
 const io = new Server(server);
 const fs = require('fs');
 const path = require('path');
+const mongoose = require('mongoose');
+require('dotenv').config();
 
 // Importar productos base para inicializar inventario
 const productsBase = require('./public/products.js');
@@ -29,10 +31,22 @@ app.get('/admin', (req, res) => {
     res.sendFile(path.resolve(__dirname, 'public/admin.html'));
 });
 
-// --- PERSISTENCIA DE DATOS ---
-const DATA_FILE = path.join(__dirname, 'data', 'store.json');
+// --- PERSISTENCIA DE DATOS CON MONGODB ---
+const MONGODB_URI = process.env.MONGODB_URI;
 
-// Estructura inicial por si el archivo no existe o falla
+// Definir Esquema para el Store
+const storeSchema = new mongoose.Schema({
+    activeOrders: { type: Object, default: {} },
+    dailyTotal: { type: Number, default: 0 },
+    dailyExpenses: { type: Number, default: 0 },
+    history: { type: Array, default: [] },
+    expenses: { type: Array, default: [] },
+    inventory: { type: Object, default: {} }
+}, { minimize: false, timestamps: true });
+
+const StoreModel = mongoose.model('Store', storeSchema);
+
+// Estructura inicial en memoria
 let store = {
     activeOrders: {},
     dailyTotal: 0,
@@ -52,48 +66,57 @@ function getProductList() {
 }
 
 // Cargar datos al inicio
-function loadData() {
+async function loadData() {
+    if (!MONGODB_URI) {
+        console.warn('⚠️ No se detectó MONGODB_URI. Los datos NO se guardarán permanentemente.');
+        return;
+    }
+
     try {
-        if (fs.existsSync(DATA_FILE)) {
-            const fileData = fs.readFileSync(DATA_FILE, 'utf8');
-            store = JSON.parse(fileData);
-            console.log('Datos cargados correctamente.');
+        await mongoose.connect(MONGODB_URI);
+        console.log('✅ Conectado a MongoDB Atlas');
 
-            // Asegurar que el inventario tenga todos los productos definidos
-            const allProductNames = getProductList();
-            let inventoryUpdated = false;
+        let dbStore = await StoreModel.findOne();
 
-            if (!store.inventory) store.inventory = {};
-
-            allProductNames.forEach(name => {
-                if (store.inventory[name] === undefined) {
-                    store.inventory[name] = 50; // Stock inicial por defecto
-                    inventoryUpdated = true;
-                }
-            });
-
-            if (inventoryUpdated) saveData();
-
+        if (dbStore) {
+            // Unir datos de DB con la estructura inicial por si hay campos nuevos
+            store = { ...store, ...dbStore.toObject() };
+            console.log('✅ Datos cargados desde MongoDB');
         } else {
-            console.log('Creando nuevo archivo de datos...');
-            store.inventory = {};
-            const allProductNames = getProductList();
-            allProductNames.forEach(name => {
-                store.inventory[name] = 50; // Stock inicial
-            });
-            saveData();
+            console.log('🆕 No se encontró registro inicial en MongoDB, creando uno...');
+            const initialStore = new StoreModel(store);
+            await initialStore.save();
         }
+
+        // Asegurar que el inventario tenga todos los productos definidos
+        const allProductNames = getProductList();
+        let inventoryUpdated = false;
+
+        if (!store.inventory) store.inventory = {};
+
+        allProductNames.forEach(name => {
+            if (store.inventory[name] === undefined) {
+                store.inventory[name] = 50; // Stock inicial por defecto
+                inventoryUpdated = true;
+            }
+        });
+
+        if (inventoryUpdated) await saveData();
+
     } catch (err) {
-        console.error('Error cargando datos:', err);
+        console.error('❌ Error conectando o cargando desde MongoDB:', err);
     }
 }
 
 // Guardar datos
-function saveData() {
+async function saveData() {
+    if (!MONGODB_URI) return;
     try {
-        fs.writeFileSync(DATA_FILE, JSON.stringify(store, null, 2));
+        // Actualizamos el único documento en la colección Store
+        await StoreModel.findOneAndUpdate({}, store, { upsert: true });
+        // console.log('💾 Datos guardados en MongoDB.');
     } catch (err) {
-        console.error('Error guardando datos:', err);
+        console.error('❌ Error guardando en MongoDB:', err);
     }
 }
 
