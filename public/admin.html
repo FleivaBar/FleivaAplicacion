@@ -807,7 +807,7 @@
             width: 36px;
             height: 36px;
             border: none;
-            background: rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.1);
             color: #fff;
             border-radius: 10px;
             font-size: 1.25rem;
@@ -819,7 +819,7 @@
         }
 
         .edit-order-header .edit-order-close:hover {
-            background: rgba(255,255,255,0.2);
+            background: rgba(255, 255, 255, 0.2);
         }
 
         .edit-order-header h3 {
@@ -948,9 +948,9 @@
             padding: 1.5rem;
             color: #888;
             font-size: 0.95rem;
-            background: rgba(255,255,255,0.03);
+            background: rgba(255, 255, 255, 0.03);
             border-radius: 12px;
-            border: 1px dashed rgba(255,255,255,0.1);
+            border: 1px dashed rgba(255, 255, 255, 0.1);
         }
 
         .edit-order-add-box {
@@ -1084,25 +1084,30 @@
                 grid-template-columns: 1fr 1fr;
                 gap: 0.5rem;
             }
+
             .edit-order-item-name {
                 grid-column: 1 / -1;
             }
+
             .edit-order-item-qty {
                 width: 100%;
                 min-height: 44px;
                 font-size: 16px;
             }
+
             .edit-order-add-row input[type="text"],
             .edit-order-add-row input[type="number"] {
                 min-height: 44px;
                 font-size: 16px;
             }
+
             .edit-order-add-row .btn-add-to-edit {
                 width: 48px;
                 height: 48px;
                 min-width: 48px;
                 min-height: 48px;
             }
+
             .btn-remove-item {
                 width: 44px;
                 height: 44px;
@@ -1357,7 +1362,8 @@
             .table-card-add-section .add-row input[type="text"],
             .table-card-add-section .add-row input[type="number"] {
                 min-height: 44px;
-                font-size: 16px; /* evita zoom en iOS */
+                font-size: 16px;
+                /* evita zoom en iOS */
             }
 
             .table-card-add-section .btn-add-item {
@@ -1421,7 +1427,7 @@
             <p id="login-error" class="error-msg">Contraseña incorrecta</p>
         </div>
     </div>
-    <audio id="notification-sound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"></audio>
+    <!-- <audio id="notification-sound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"></audio> -->
 
     <header class="admin-header">
         <h1>Admin Dashboard</h1>
@@ -1495,7 +1501,8 @@
     <div id="edit-order-modal" class="admin-modal-overlay" onclick="if(event.target===this) closeEditOrderModal()">
         <div class="admin-modal-box edit-order-modal">
             <div class="edit-order-header">
-                <button type="button" class="edit-order-close" onclick="closeEditOrderModal()" title="Cerrar">&times;</button>
+                <button type="button" class="edit-order-close" onclick="closeEditOrderModal()"
+                    title="Cerrar">&times;</button>
                 <h3>✏️ Modificar pedido</h3>
                 <p id="edit-order-subtitle" class="edit-order-subtitle">Mesa — Pedido #1</p>
             </div>
@@ -1511,7 +1518,8 @@
                         <div class="edit-order-add-row">
                             <input type="text" id="edit-order-item-name" placeholder="Nombre del producto">
                             <input type="number" id="edit-order-item-price" placeholder="$" min="0">
-                            <button type="button" class="btn-add-to-edit" onclick="addItemToEditOrder()" title="Agregar">+</button>
+                            <button type="button" class="btn-add-to-edit" onclick="addItemToEditOrder()"
+                                title="Agregar">+</button>
                         </div>
                     </div>
                 </div>
